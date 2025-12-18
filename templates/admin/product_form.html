@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+
+    <style>
+        :root {
+            --green: #2E7D32;
+            --green-light: #E8F5E9;
+            --dark: #1B1B1B;
+            --bg: #F5F7F6;
+            --radius: 16px;
+            --shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: "Segoe UI", system-ui, sans-serif;
+        }
+
+        body {
+            background: var(--bg);
+            padding: 40px;
+        }
+
+        /* PAGE HEADER */
+        .page-title {
+            color: var(--green);
+            margin-bottom: 25px;
+        }
+
+        /* FORM CARD */
+        .form-card {
+            background: white;
+            padding: 32px;
+            border-radius: var(--radius);
+            width: 520px;
+            max-width: 100%;
+            box-shadow: var(--shadow);
+        }
+
+        /* FORM ELEMENTS */
+        form p {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: var(--dark);
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+            transition: border .2s ease, box-shadow .2s ease;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--green);
+            box-shadow: 0 0 0 3px rgba(46, 125, 50, .15);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 90px;
+        }
+
+        /* FILE INPUT */
+        input[type="file"] {
+            padding: 8px;
+            background: #fafafa;
+        }
+
+        /* ACTIONS */
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 25px;
+        }
+
+        .btn {
+            padding: 12px 22px;
+            border-radius: 10px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: transform .2s ease, box-shadow .2s ease;
+        }
+
+        .btn-save {
+            background: var(--green);
+            color: white;
+        }
+
+        .btn-cancel {
+            background: #eee;
+            color: #333;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, .15);
+        }
+
+        /* REQUIRED MARK */
+        .required {
+            color: #D32F2F;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 600px) {
+            body {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <h2 class="page-title">{{ title }}</h2>
+
+    <div class="form-card">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-save">💾 Save</button>
+                <a href="javascript:history.back()" class="btn btn-cancel">↩ Cancel</a>
+            </div>
+        </form>
+    </div>
+
+</body>
+
+</html>

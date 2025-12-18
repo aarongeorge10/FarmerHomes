@@ -7,6 +7,7 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django.utils import timezone
 from django.utils.crypto import get_random_string
+from products.models import Product 
 
 def home(request):
     return render(request, "user/home.html")
@@ -110,7 +111,25 @@ def login_view(request):
 
 @admin_required
 def admin_dashboard(request):
-    return render(request, "admin/dashboard.html")
+    if request.session.get("role") != "admin":
+        return redirect("login")
+
+    total_users = AllUser.objects.count()
+    total_farmers = AllUser.objects.filter(role="farmer").count()
+    total_buyers = AllUser.objects.filter(role="buyer").count()
+    total_products = Product.objects.count()
+
+    recent_users = AllUser.objects.order_by("-created_at")[:5]
+
+    context = {
+        "total_users": total_users,
+        "total_farmers": total_farmers,
+        "total_buyers": total_buyers,
+        "total_products": total_products,
+        "recent_users": recent_users,
+    }
+
+    return render(request, "admin/dashboard.html", context)
 
 def userlogout(request):
     logout(request)
@@ -207,3 +226,12 @@ def reset_password(request, user_id, token):
         return redirect("login")
 
     return render(request, "user/reset_password.html")
+
+
+def admin_users(request):
+    # 🔒 custom session check
+    if request.session.get("role") != "admin":
+        return redirect("login")
+
+    users = AllUser.objects.all()
+    return render(request, "admin/users.html", {"users": users})

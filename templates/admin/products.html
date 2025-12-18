@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Products</title>
+
+    <style>
+        :root {
+            --green: #2E7D32;
+            --green-light: #E8F5E9;
+            --danger: #D32F2F;
+            --dark: #1B1B1B;
+            --bg: #F5F7F6;
+            --radius: 14px;
+            --shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: "Segoe UI", system-ui, sans-serif;
+        }
+
+        body {
+            background: var(--bg);
+            padding: 110px 40px 40px;
+            /* space for navbar */
+        }
+
+        /* ================= NAVBAR ================= */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background: white;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, .1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            z-index: 1000;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .brand {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--green);
+            text-decoration: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            font-weight: 600;
+            color: #444;
+            padding: 8px 14px;
+            border-radius: 8px;
+            transition: background .2s ease, color .2s ease;
+        }
+
+        .nav-links a:hover {
+            background: var(--green-light);
+            color: var(--green);
+        }
+
+        .nav-links .active {
+            background: var(--green);
+            color: white;
+        }
+
+        .logout-btn {
+            background: #FFEBEE;
+            color: var(--danger);
+            padding: 8px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .logout-btn:hover {
+            opacity: .85;
+        }
+
+        /* ================= HEADER ================= */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        h2 {
+            color: var(--green);
+            margin: 0;
+        }
+
+        .add-btn {
+            padding: 12px 22px;
+            background: var(--green);
+            color: white;
+            border-radius: var(--radius);
+            text-decoration: none;
+            font-weight: 600;
+            box-shadow: var(--shadow);
+            transition: transform .2s ease, box-shadow .2s ease;
+        }
+
+        .add-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, .18);
+        }
+
+        /* ================= TABLE ================= */
+        .table-wrap {
+            overflow-x: auto;
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 900px;
+        }
+
+        th {
+            background: var(--green);
+            color: white;
+            padding: 16px;
+            text-transform: uppercase;
+            font-size: 14px;
+        }
+
+        td {
+            padding: 16px;
+            border-bottom: 1px solid #eee;
+        }
+
+        tr:hover {
+            background: var(--green-light);
+        }
+
+        .product-img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+        .status {
+            padding: 6px 14px;
+            border-radius: 50px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .active {
+            background: #C8E6C9;
+            color: #1B5E20;
+        }
+
+        .inactive {
+            background: #FFCDD2;
+            color: #B71C1C;
+        }
+
+        .actions a {
+            text-decoration: none;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-right: 6px;
+        }
+
+        .edit-btn {
+            background: #E3F2FD;
+            color: #1565C0;
+        }
+
+        .delete-btn {
+            background: #FFEBEE;
+            color: var(--danger);
+        }
+
+        .empty {
+            text-align: center;
+            padding: 40px;
+            color: #777;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 100px 20px 20px;
+            }
+
+            .navbar {
+                padding: 0 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <div class="navbar">
+        <div class="nav-left">
+            <a href="{% url 'admin_dashboard' %}" class="brand">🌾 Admin Panel</a>
+
+            <div class="nav-links">
+                <a href="{% url 'admin_dashboard' %}">Dashboard</a>
+                <a href="{% url 'admin_products' %}" class="active">Products</a>
+                <a href="{% url 'admin_users' %}" >Manage Users</a>
+            </div>
+        </div>
+
+        <a href="{% url 'logout' %}" class="logout-btn">🚪 Logout</a>
+    </div>
+
+    <!-- PAGE HEADER -->
+    <div class="page-header">
+        <h2>📦 Product Management</h2>
+        <a href="{% url 'admin_add_product' %}" class="add-btn">➕ Add Product</a>
+    </div>
+
+    <!-- TABLE -->
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Image</th>
+                    <th>Name</th>
+                    <th>Category</th>
+                    <th>Season</th>
+                    <th>Price</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for p in products %}
+                <tr>
+                    <td>
+                        {% if p.image %}
+                        <img src="{{ p.image.url }}" class="product-img">
+                        {% else %} — {% endif %}
+                    </td>
+                    <td><strong>{{ p.name }}</strong></td>
+                    <td>{{ p.category.name }}</td>
+                    <td>{{ p.season }}</td>
+                    <td>₹ {{ p.price }}</td>
+                    <td>
+                        {% if p.is_active %}
+                        <span class="status active">Active</span>
+                        {% else %}
+                        <span class="status inactive">Inactive</span>
+                        {% endif %}
+                    </td>
+                    <td class="actions">
+                        <a href="{% url 'admin_edit_product' p.id %}" class="edit-btn">✏️ Edit</a>
+                        <a href="{% url 'admin_delete_product' p.id %}" onclick="return confirm('Delete this product?')"
+                            class="delete-btn">🗑 Delete</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="empty">
+                        🚫 No products found. Click <strong>Add Product</strong> to get started.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</body>
+
+</html>

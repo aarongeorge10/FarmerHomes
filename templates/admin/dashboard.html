@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -27,7 +28,7 @@
             height: 100vh;
             background: linear-gradient(180deg, #1b5e20, #2e7d32);
             color: #fff;
-            padding: 25px 20px;
+            padding: 30px 25px;
             position: fixed;
         }
 
@@ -63,7 +64,7 @@
             background: #fff;
             padding: 18px 25px;
             border-radius: 15px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -95,7 +96,7 @@
             background: #fff;
             padding: 25px;
             border-radius: 18px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
             transition: transform 0.3s;
         }
 
@@ -119,7 +120,7 @@
             background: #fff;
             padding: 25px;
             border-radius: 18px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
         }
 
         table {
@@ -127,7 +128,8 @@
             border-collapse: collapse;
         }
 
-        th, td {
+        th,
+        td {
             text-align: left;
             padding: 14px;
         }
@@ -155,6 +157,21 @@
         .inactive {
             background: #d32f2f;
         }
+
+        .brand {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--green);
+        }
+
+        .menu {
+            margin-top: 40px;
+            /* 👈 moves Dashboard down */
+        }
+
+        .sidebar a.active {
+            background: rgba(68, 216, 132, 0.25);
+        }
     </style>
 </head>
 
@@ -162,13 +179,16 @@
 
     <!-- SIDEBAR -->
     <div class="sidebar">
-        <h2>Admin Panel</h2>
-        <a href="#">Dashboard</a>
-        <a href="#">Users</a>
-        <a href="#">Products</a>
-        <a href="#">Orders</a>
-        <a href="#">Reports</a>
-        <a href="#">Settings</a>
+        <div class="brand">🌾 Farmer Homes | Admin Panel</div>
+
+        <div class="menu">
+            <a href="{% url 'admin_dashboard' %}" class="active">Dashboard</a>
+            <a href="{% url 'admin_users' %}">Manage Users</a>
+            <a href="{% url 'admin_products' %}">Manage Products</a>
+            <a href="#">Orders</a>
+            <a href="#">Reports</a>
+            <a href="#">Settings</a>
+        </div>
     </div>
 
     <!-- MAIN CONTENT -->
@@ -184,22 +204,22 @@
         <div class="cards">
             <div class="card">
                 <h4>Total Users</h4>
-                <h2>245</h2>
+                <h2>{{ total_users }}</h2>
             </div>
 
             <div class="card">
                 <h4>Total Farmers</h4>
-                <h2>180</h2>
+                <h2>{{ total_farmers }}</h2>
             </div>
 
             <div class="card">
-                <h4>Products</h4>
-                <h2>96</h2>
+                <h4>Total Products</h4>
+                <h2>{{ total_products }}</h2>
             </div>
 
             <div class="card">
                 <h4>Orders</h4>
-                <h2>420</h2>
+                <h2>0</h2> <!-- replace later -->
             </div>
         </div>
 
@@ -213,28 +233,27 @@
                     <th>Role</th>
                     <th>Status</th>
                 </tr>
+
+                {% for user in recent_users %}
                 <tr>
-                    <td>rahul</td>
-                    <td>rahul@mail.com</td>
-                    <td>Farmer</td>
-                    <td><span class="status active">Active</span></td>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.role|capfirst }}</td>
+                    <td>
+                        {% if user.is_active %}
+                        <span class="status active">Active</span>
+                        {% else %}
+                        <span class="status inactive">Inactive</span>
+                        {% endif %}
+                    </td>
                 </tr>
-                <tr>
-                    <td>priya</td>
-                    <td>priya@mail.com</td>
-                    <td>Buyer</td>
-                    <td><span class="status inactive">Inactive</span></td>
-                </tr>
-                <tr>
-                    <td>admin</td>
-                    <td>admin@mail.com</td>
-                    <td>Admin</td>
-                    <td><span class="status active">Active</span></td>
-                </tr>
+                {% endfor %}
             </table>
+
         </div>
 
     </div>
 
 </body>
+
 </html>

@@ -1,0 +1,224 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>{{ category.name }} | Farmer Homes</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        :root {
+            --green: #2E7D32;
+            --green-dark: #1B5E20;
+        }
+
+        body {
+            font-family: "Segoe UI", system-ui, sans-serif;
+            background: #f5f7f6;
+            padding: 120px 40px 40px;
+            /* 🔥 space for navbar */
+            margin: 0;
+        }
+
+        /* ================= NAVBAR ================= */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 80px;
+            background: white;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, .1);
+            z-index: 1000;
+        }
+
+        /* 🔥 IMPORTANT */
+        .nav-container {
+            max-width: 1100px;
+            /* SAME as product grid */
+            height: 100%;
+            margin: 0 auto;
+            padding: 0 20px;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand {
+            font-size: 22px;
+            font-weight: 700;
+            color: #2E7D32;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-links a {
+            padding: 10px 18px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-weight: 600;
+            color: #2E7D32;
+            transition: background .25s, color .25s;
+        }
+
+        .nav-links a:hover {
+            background: #2E7D32;
+            color: white;
+        }
+
+        /* ================= CONTENT ================= */
+        h2 {
+            color: var(--green);
+            margin-bottom: 35px;
+            text-align: center;
+            font-size: 32px;
+        }
+
+        /* GRID */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 40px;
+
+            /* ✅ FIX */
+            max-width: 1100px;
+            /* controls how wide cards can spread */
+            margin: 0 auto;
+            /* centers the grid */
+            justify-items: center;
+        }
+
+        /* CARD */
+        .card {
+            background: white;
+            border-radius: 18px;
+            padding: 16px;
+            max-width: 300px;
+            width: 100%;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, .12);
+            transition: transform .3s ease, box-shadow .3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, .18);
+        }
+
+        .card img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            border-radius: 14px;
+            margin-bottom: 12px;
+        }
+
+        .card h3 {
+            margin: 8px 0 6px;
+            font-size: 18px;
+            color: #1B1B1B;
+        }
+
+        .card p {
+            font-size: 14px;
+            color: #555;
+        }
+
+        /* PRICE + ACTIONS */
+        .actions {
+            margin-top: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .price {
+            color: var(--green);
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .buy-btn {
+            padding: 9px 18px;
+            background: var(--green);
+            color: white;
+            border-radius: 22px;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: background .25s ease, transform .2s ease;
+        }
+
+        .buy-btn:hover {
+            background: var(--green-dark);
+            transform: scale(1.05);
+        }
+
+        .buy-btn:active {
+            transform: scale(0.95);
+        }
+
+        .empty {
+            grid-column: 1 / -1;
+            text-align: center;
+            font-size: 16px;
+            color: #777;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 110px 20px 20px;
+            }
+
+            .navbar {
+                padding: 0 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="{% url 'home' %}" class="brand">Farmer Homes</a>
+
+            <div class="nav-links">
+                <a href="{% url 'home' %}">Home</a>
+                <a href="{% url 'login' %}">Login</a>
+            </div>
+        </div>
+    </nav>
+
+
+    <!-- CONTENT -->
+    <h2>{{ category.name }}</h2>
+
+    <div class="grid">
+        {% for product in products %}
+        <div class="card">
+            <img src="{{ product.image.url }}" alt="{{ product.name }}">
+
+            <h3>{{ product.name }}</h3>
+
+            <p>{{ product.description|truncatewords:14 }}</p>
+
+            <div class="actions">
+                <span class="price">₹ {{ product.price }}</span>
+                <a href="{% url 'login' %}" class="buy-btn">Purchase</a>
+            </div>
+        </div>
+        {% empty %}
+        <p class="empty">No products available in this category.</p>
+        {% endfor %}
+    </div>
+
+</body>
+
+</html>
