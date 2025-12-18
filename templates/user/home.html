@@ -1,0 +1,391 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Farmer Homes | Smart Agriculture Platform</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Lottie -->
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded" rel="stylesheet" />
+
+    <style>
+        :root {
+            --green: #2E7D32;
+            --green-light: #66BB6A;
+            --yellow: #F9A825;
+            --dark: #1B1B1B;
+            --bg: #F5F7F6;
+            --radius: 18px;
+            --shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Segoe UI", sans-serif;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--dark);
+        }
+
+        /* ================= LOADER ================= */
+        #loader {
+            position: fixed;
+            inset: 0;
+            background: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        #content {
+            display: none;
+        }
+
+        /* ================= NAVBAR ================= */
+        .menu {
+            position: fixed;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 0.8rem 1.2rem;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            display: flex;
+            gap: 16px;
+            z-index: 1000;
+        }
+
+        .link {
+            display: flex;
+            align-items: center;
+            width: 56px;
+            height: 48px;
+            border-radius: var(--radius);
+            text-decoration: none;
+            color: #6b7280;
+            transition: width 0.3s ease, background 0.3s ease;
+            overflow: hidden;
+        }
+
+        .link:hover {
+            width: 190px;
+            background: var(--green);
+            color: white;
+        }
+
+        .link-icon {
+            font-family: "Material Symbols Rounded";
+            font-size: 26px;
+            margin-left: 14px;
+        }
+
+        .link-title {
+            margin-left: 12px;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.2s ease 0.15s;
+        }
+
+        .link:hover .link-title {
+            opacity: 1;
+        }
+
+        /* ================= HERO WITH IMAGE SLIDESHOW ================= */
+        .hero {
+            padding: 140px 70px 80px;
+            min-height: 75vh;
+            position: relative;
+            display: flex;
+            align-items: center;
+            padding: 140px 70px 80px;
+            min-height: 75vh;
+
+            color: white;
+            overflow: hidden;
+        }
+
+        /* Background slideshow */
+        .hero::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-size: cover;
+            background-position: center;
+            animation: heroSlideshow 20s infinite;
+            z-index: 1;
+            filter: brightness(0.85);
+        }
+
+        /* Green overlay */
+        .hero::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.25);
+            z-index: 2;
+        }
+
+
+        @keyframes heroSlideshow {
+            0% {
+                background-image: url("/media/images/agri seed.webp");
+            }
+
+            25% {
+                background-image: url("/media/images/agri corn.webp");
+            }
+
+            50% {
+                background-image: url("/media/images/coconut 1.webp");
+            }
+
+            75% {
+                background-image: url("/media/images/img3.webp");
+            }
+
+            100% {
+                background-image: url("/media/images/market 4.webp");
+            }
+        }
+
+
+        .hero-text,
+        .hero-image {
+            position: relative;
+            z-index: 3;
+        }
+
+        .hero-text {
+            width: 50%;
+            background: rgba(255, 255, 255, 0.18);
+            backdrop-filter: blur(16px);
+            padding: 45px;
+            border-radius: 28px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+        }
+
+        .hero-text h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .hero-text p {
+            font-size: 18px;
+            line-height: 1.6;
+        }
+
+        .hero-text button {
+            margin-top: 30px;
+            padding: 14px 34px;
+            border: none;
+            background: var(--yellow);
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 30px;
+            cursor: pointer;
+        }
+
+        .hero-image {
+            width: 40%;
+            text-align: center;
+        }
+
+        .hero-image img {
+            width: 60%;
+            animation: floatImage 4s ease-in-out infinite;
+        }
+
+        @keyframes floatImage {
+            0% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-14px);
+            }
+
+            100% {
+                transform: translateY(0);
+            }
+        }
+
+        /* ================= SECTIONS ================= */
+        .section {
+            padding: 90px 40px;
+            text-align: center;
+            margin-top: -40px;
+        }
+
+        .section h2 {
+            font-size: 36px;
+            color: var(--green);
+            margin-bottom: 40px;
+        }
+
+        /* ================= ACTION CARDS ================= */
+        .action-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 30px;
+        }
+
+        .card-link {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .action-card {
+            background: white;
+            padding: 40px 25px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(40px) scale(0.95);
+            transition: all 0.6s ease;
+        }
+
+        .action-card.show {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        .action-card:hover {
+            transform: translateY(-14px) scale(1.05);
+        }
+
+        .icon {
+            font-size: 54px;
+            color: var(--green);
+            margin-bottom: 18px;
+        }
+
+        /* ================= FOOTER ================= */
+        footer {
+            background: #1B1B1B;
+            color: #ccc;
+            padding: 40px;
+            text-align: center;
+        }
+
+        @media (max-width: 900px) {
+            .hero {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .hero-text,
+            .hero-image {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- LOADER -->
+    <div id="loader">
+        <lottie-player src="{% static 'animations/farmer-walking.json' %}" background="transparent" speed="1"
+            style="width: 500px; height: 500px;" loop autoplay>
+        </lottie-player>
+        <p>Loading Farmer Homes...</p>
+    </div>
+
+    <div id="content">
+
+        <!-- NAVBAR -->
+        <nav class="menu">
+            <a href="{% url 'home' %}" class="link"><span class="link-icon">home</span><span
+                    class="link-title">Home</span></a>
+            <a href="#" class="link"><span class="link-icon">store</span><span class="link-title">Market</span></a>
+            <a href="{% url 'login' %}" class="link"><span class="link-icon">login</span><span class="link-title">Login</span></a>
+        </nav>
+
+        <!-- HERO -->
+        <section class="hero">
+            <div class="hero-text">
+                <h1>Smart Farming Starts Here 🌱</h1>
+                <p>
+                    Data-Driven Crop Planning, Transparent Markets
+                    and Rule-Based Weather Advisory for Farmers.
+                </p>
+                <a href="#"><button>Get Started</button></a>
+            </div>
+
+        </section>
+
+        <!-- ACTION CARDS -->
+        <section class="section">
+            <h2>Everything a Farmer Needs</h2>
+            <div class="action-cards">
+                <a href="#" class="card-link">
+                    <div class="action-card">
+                        <span class="material-symbols-rounded icon">eco</span>
+                        <h3>Seeds</h3>
+                        <p>Certified seeds with crop suitability guidance.</p>
+                    </div>
+                </a>
+                <div class="action-card"><span class="material-symbols-rounded icon">science</span>
+                    <h3>Fertilizers</h3>
+                    <p>Right nutrients at the right time.</p>
+                </div>
+                <div class="action-card"><span class="material-symbols-rounded icon">agriculture</span>
+                    <h3>Equipment</h3>
+                    <p>Modern tools & machinery access.</p>
+                </div>
+                <div class="action-card"><span class="material-symbols-rounded icon">trending_up</span>
+                    <h3>Market Prices</h3>
+                    <p>Live mandi & buyer price updates.</p>
+                </div>
+                <div class="action-card"><span class="material-symbols-rounded icon">cloud</span>
+                    <h3>Weather Advisory</h3>
+                    <p>Weather-based smart recommendations.</p>
+                </div>
+                <div class="action-card"><span class="material-symbols-rounded icon">storefront</span>
+                    <h3>Sell Produce</h3>
+                    <p>Sell crops directly to buyers with secure QR-code dispatch.</p>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            <p>Farmer Homes – Empowering Indian Farmers Digitally 🇮🇳</p>
+            <p>AI • Transparency • Fair Markets • Sustainable Future</p>
+        </footer>
+
+    </div>
+
+    <script>
+        window.addEventListener("load", () => {
+            setTimeout(() => {
+                loader.style.display = "none";
+                content.style.display = "block";
+            }, 1000);
+        });
+
+        const cards = document.querySelectorAll(".action-card");
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(e => e.isIntersecting && e.target.classList.add("show"));
+        }, { threshold: 0.2 });
+        cards.forEach(c => observer.observe(c));
+    </script>
+
+</body>
+
+</html>

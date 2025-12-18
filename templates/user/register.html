@@ -1,0 +1,221 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register | Smart Agriculture</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #2E7D32, #66BB6A);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .register-wrapper {
+            width: 100%;
+            max-width: 460px;
+            padding: 40px;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(14px);
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.25);
+            animation: fadeIn 0.8s ease-in-out;
+            position: relative;
+        }
+
+        .back-arrow {
+            position: absolute;
+            top: 22px;
+            left: 22px;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 20px;
+            text-decoration: none;
+            transition: all 0.25s ease;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .back-arrow:hover {
+            background: rgba(255, 255, 255, 0.4);
+            transform: translateX(-3px);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .register-title {
+            text-align: center;
+            color: #fff;
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .register-subtitle {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 14px;
+            margin-bottom: 26px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 14px 16px;
+            border-radius: 12px;
+            border: none;
+            outline: none;
+            font-size: 14px;
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        .form-group select {
+            cursor: pointer;
+        }
+
+        .error-message {
+            background: rgba(255, 0, 0, 0.12);
+            color: #ff4d4d;
+            padding: 10px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 13px;
+            margin-bottom: 14px;
+        }
+
+        .register-btn {
+            width: 100%;
+            padding: 14px;
+            border-radius: 14px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            background: linear-gradient(135deg, #F9A825, #FFD54F);
+            color: #1B1B1B;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            margin-top: 6px;
+        }
+
+        .register-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+        }
+
+        .footer-text {
+            text-align: center;
+            margin-top: 18px;
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+        }
+
+        .footer-text a {
+            color: #FFD54F;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .footer-text a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 480px) {
+            .register-wrapper {
+                margin: 20px;
+                padding: 30px 22px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="register-wrapper">
+        <a href="{% url 'home' %}" class="back-arrow" title="Back to Home">
+            &#8592;
+        </a>
+        <h2 class="register-title">Create Account 🌾</h2>
+        <p class="register-subtitle">Join the Smart Agriculture platform</p>
+
+        {% if error %}
+        <div class="error-message">{{ error }}</div>
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <input type="text" name="username" placeholder="Username" required>
+            </div>
+
+            <div class="form-group">
+                <input type="email" name="email" placeholder="Email Address" required>
+            </div>
+
+            <div class="form-group">
+                <input type="tel" name="phone" placeholder="Phone Number" pattern="[0-9]{10}"
+                    title="Enter a valid 10-digit phone number" required>
+            </div>
+
+            <div class="form-group">
+                <input type="password" name="password" placeholder="Password" required>
+            </div>
+
+            <div class="form-group">
+                <input type="password" name="confirm_password" placeholder="Confirm Password" required>
+            </div>
+
+            <!-- Role Selection -->
+            <div class="form-group">
+                <select name="role" required>
+                    <option value="" disabled selected>Select Role</option>
+                    <option value="farmer">Farmer</option>
+                    <option value="buyer">Buyer / Wholesaler / Exporter</option>
+                </select>
+            </div>
+
+            <button type="submit" class="register-btn">Register</button>
+        </form>
+
+        <div class="footer-text">
+            Already have an account?
+            <a href="{% url 'login' %}">Login here</a>
+        </div>
+    </div>
+
+</body>
+
+</html>

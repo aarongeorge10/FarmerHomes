@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
+        }
+
+        body {
+            background: #f4f6f8;
+            display: flex;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 260px;
+            height: 100vh;
+            background: linear-gradient(180deg, #1b5e20, #2e7d32);
+            color: #fff;
+            padding: 25px 20px;
+            position: fixed;
+        }
+
+        .sidebar h2 {
+            text-align: center;
+            margin-bottom: 40px;
+            font-weight: 600;
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 14px 15px;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            transition: 0.3s;
+        }
+
+        .sidebar a:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        /* MAIN CONTENT */
+        .main {
+            margin-left: 260px;
+            padding: 30px;
+            width: 100%;
+        }
+
+        /* TOP BAR */
+        .topbar {
+            background: #fff;
+            padding: 18px 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .topbar h3 {
+            font-weight: 500;
+        }
+
+        .logout {
+            background: #d32f2f;
+            color: #fff;
+            padding: 10px 18px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        /* CARDS */
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: #fff;
+            padding: 25px;
+            border-radius: 18px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+            transition: transform 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-6px);
+        }
+
+        .card h4 {
+            color: #555;
+            font-size: 15px;
+            margin-bottom: 10px;
+        }
+
+        .card h2 {
+            font-size: 32px;
+            color: #2e7d32;
+        }
+
+        /* TABLE */
+        .table-box {
+            background: #fff;
+            padding: 25px;
+            border-radius: 18px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 14px;
+        }
+
+        th {
+            background: #f1f3f4;
+            color: #555;
+        }
+
+        tr:nth-child(even) {
+            background: #fafafa;
+        }
+
+        .status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            color: #fff;
+        }
+
+        .active {
+            background: #2e7d32;
+        }
+
+        .inactive {
+            background: #d32f2f;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <h2>Admin Panel</h2>
+        <a href="#">Dashboard</a>
+        <a href="#">Users</a>
+        <a href="#">Products</a>
+        <a href="#">Orders</a>
+        <a href="#">Reports</a>
+        <a href="#">Settings</a>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main">
+
+        <!-- TOP BAR -->
+        <div class="topbar">
+            <h3>Welcome, Admin 👋</h3>
+            <a href="{% url 'logout' %}" class="logout">Logout</a>
+        </div>
+
+        <!-- STAT CARDS -->
+        <div class="cards">
+            <div class="card">
+                <h4>Total Users</h4>
+                <h2>245</h2>
+            </div>
+
+            <div class="card">
+                <h4>Total Farmers</h4>
+                <h2>180</h2>
+            </div>
+
+            <div class="card">
+                <h4>Products</h4>
+                <h2>96</h2>
+            </div>
+
+            <div class="card">
+                <h4>Orders</h4>
+                <h2>420</h2>
+            </div>
+        </div>
+
+        <!-- TABLE -->
+        <div class="table-box">
+            <h3 style="margin-bottom:20px;">Recent Users</h3>
+            <table>
+                <tr>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Status</th>
+                </tr>
+                <tr>
+                    <td>rahul</td>
+                    <td>rahul@mail.com</td>
+                    <td>Farmer</td>
+                    <td><span class="status active">Active</span></td>
+                </tr>
+                <tr>
+                    <td>priya</td>
+                    <td>priya@mail.com</td>
+                    <td>Buyer</td>
+                    <td><span class="status inactive">Inactive</span></td>
+                </tr>
+                <tr>
+                    <td>admin</td>
+                    <td>admin@mail.com</td>
+                    <td>Admin</td>
+                    <td><span class="status active">Active</span></td>
+                </tr>
+            </table>
+        </div>
+
+    </div>
+
+</body>
+</html>
