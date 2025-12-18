@@ -16,6 +16,10 @@ class AllUser(models.Model):
     password = models.CharField(max_length=255)  # hashed password
     role = models.CharField(max_length=20, choices=ROLE_CHOICES)
 
+        # 🔐 Forgot password fields
+    reset_token = models.CharField(max_length=100, null=True, blank=True)
+    reset_token_created = models.DateTimeField(null=True, blank=True)
+
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(default=timezone.now)
 

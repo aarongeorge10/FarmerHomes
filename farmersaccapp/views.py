@@ -5,7 +5,8 @@ from .decorators import admin_required
 from django.contrib.auth import logout
 from django.core.mail import send_mail
 from django.conf import settings
-
+from django.utils import timezone
+from django.utils.crypto import get_random_string
 
 def home(request):
     return render(request, "user/home.html")
@@ -117,3 +118,92 @@ def userlogout(request):
 
 def user_dashboard(request):
     return render(request, "user/user_dashboard.html")
+
+# FORGOT PASSWORD
+# ===============================
+def forgot_password(request):
+    if request.method == "POST":
+        email = request.POST.get("email")
+
+        try:
+            user = AllUser.objects.get(email=email, is_active=True)
+        except AllUser.DoesNotExist:
+            return render(request, "user/forgot_password.html", {
+                "error": "Email not registered"
+            })
+
+        # generate secure token
+        token = get_random_string(40)
+        user.reset_token = token
+        user.reset_token_created = timezone.now()
+        user.save()
+
+        reset_link = (
+            f"http://127.0.0.1:8000/"
+            f"reset-password/{user.id}/{token}/"
+        )
+
+        send_mail(
+            subject="Reset your Smart Agriculture password",
+            message=f"""
+            Hello {user.username},
+
+            You requested to reset your password.
+
+            Click the link below:
+            {reset_link}
+
+            If you did not request this, ignore this email.
+            """,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[user.email],
+            fail_silently=False,
+        )
+
+        return render(request, "user/forgot_password.html", {
+            "success": "Password reset link sent to your email"
+        })
+
+    return render(request, "user/forgot_password.html")
+
+
+# ===============================
+# RESET PASSWORD
+# ===============================
+def reset_password(request, user_id, token):
+    try:
+        user = AllUser.objects.get(
+            id=user_id,
+            reset_token=token,
+            is_active=True
+        )
+    except AllUser.DoesNotExist:
+        return render(request, "user/reset_password.html", {
+            "error": "Invalid or expired reset link"
+        })
+
+    # Optional: token expiry (30 min)
+    if user.reset_token_created:
+        elapsed = timezone.now() - user.reset_token_created
+        if elapsed.total_seconds() > 1800:
+            return render(request, "user/reset_password.html", {
+                "error": "Reset link expired"
+            })
+
+    if request.method == "POST":
+        password = request.POST.get("password")
+        confirm = request.POST.get("confirm_password")
+
+        if password != confirm:
+            return render(request, "user/reset_password.html", {
+                "error": "Passwords do not match"
+            })
+
+        user.password = make_password(password)
+        user.reset_token = None
+        user.reset_token_created = None
+        user.save()
+
+        return redirect("login")
+
+    return render(request, "user/reset_password.html")

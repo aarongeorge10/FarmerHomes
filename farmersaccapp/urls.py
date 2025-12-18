@@ -8,5 +8,7 @@ urlpatterns = [
     path("dashboard/", views.admin_dashboard, name="admin_dashboard"),
     path('logout/', views.userlogout, name='logout'),
     path("user dashboard/", views.user_dashboard, name="user_dashboard"),
+    path('forgot-password/', views.forgot_password, name='forgot_password'),
+    path('reset-password/<int:user_id>/<str:token>/', views.reset_password, name='reset_password'),
 
 ]
