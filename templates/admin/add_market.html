@@ -1,0 +1,202 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Market</title>
+
+    <style>
+        :root {
+            --green: #2E7D32;
+            --green-light: #E8F5E9;
+            --dark: #1B1B1B;
+            --bg: #F5F7F6;
+            --radius: 16px;
+            --shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: "Segoe UI", system-ui, sans-serif;
+        }
+
+        body {
+            background: var(--bg);
+            padding: 40px;
+        }
+
+        
+        /* PAGE CARD */
+        .form-card {
+            max-width: 700px;
+            margin: auto;
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 35px;
+        }
+
+        .form-card h2 {
+            color: var(--green);
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        /* FORM GRID */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group.full {
+            grid-column: span 2;
+        }
+
+        label {
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #555;
+        }
+
+        input,
+        textarea {
+            padding: 12px 14px;
+            border-radius: 10px;
+            border: 1px solid #ddd;
+            font-size: 15px;
+            outline: none;
+            transition: 0.3s ease;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        input:focus,
+        textarea:focus {
+            border-color: var(--green);
+            box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.15);
+        }
+
+        /* ACTIONS */
+        .actions {
+            margin-top: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 12px 26px;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            font-size: 15px;
+            transition: 0.3s ease;
+        }
+
+        .btn-save {
+            background: var(--green);
+            color: white;
+            box-shadow: var(--shadow);
+        }
+
+        .btn-save:hover {
+            background: #1b5e20;
+            transform: translateY(-2px);
+        }
+
+        .btn-back {
+            color: var(--green);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .btn-back:hover {
+            text-decoration: underline;
+        }
+
+        /* MOBILE */
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-group.full {
+                grid-column: span 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    
+
+    <div class="form-card">
+        <h2>📍 Add New Market</h2>
+
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="form-grid">
+
+                <div class="form-group full">
+                    <label>Market Name</label>
+                    <input name="name" placeholder="Eg: APMC Central Market" required>
+                </div>
+
+                <div class="form-group full">
+                    <label>Address</label>
+                    <textarea name="address" placeholder="Full market address"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Village</label>
+                    <input name="village" placeholder="Village">
+                </div>
+
+                <div class="form-group">
+                    <label>District</label>
+                    <input name="district" placeholder="District">
+                </div>
+
+                <div class="form-group">
+                    <label>State</label>
+                    <input name="state" placeholder="State">
+                </div>
+
+                <div class="form-group">
+                    <label>Latitude</label>
+                    <input name="latitude" placeholder="Eg: 11.0168">
+                </div>
+
+                <div class="form-group">
+                    <label>Longitude</label>
+                    <input name="longitude" placeholder="Eg: 76.9558">
+                </div>
+
+            </div>
+
+            <div class="actions">
+                <a href="{% url 'admin_markets' %}" class="btn-back">← Back to Markets</a>
+                <button type="submit" class="btn btn-save">💾 Save Market</button>
+            </div>
+
+        </form>
+    </div>
+
+</body>
+
+</html>

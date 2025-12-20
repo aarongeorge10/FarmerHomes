@@ -9,16 +9,24 @@ class AllUser(models.Model):
         ('admin', 'Admin'),
     )
 
-    username = models.CharField(max_length=150, unique=True, db_index=True)
-    email = models.EmailField(unique=True, db_index=True)
-    phone = models.CharField(max_length=15, unique=True, db_index=True)
-
-    password = models.CharField(max_length=255)  # hashed password
+    username = models.CharField(max_length=150, unique=True)
+    email = models.EmailField(unique=True)
+    phone = models.CharField(max_length=15, unique=True)
+    password = models.CharField(max_length=255)
     role = models.CharField(max_length=20, choices=ROLE_CHOICES)
 
-        # 🔐 Forgot password fields
+            # 🔐 Forgot password fields
     reset_token = models.CharField(max_length=100, null=True, blank=True)
     reset_token_created = models.DateTimeField(null=True, blank=True)
+
+    # 🔹 Buyer specific
+    shop_name = models.CharField(max_length=200, blank=True, null=True)
+    gst_number = models.CharField(max_length=20, blank=True, null=True)
+
+    # 🔹 Approval system
+    is_approved = models.BooleanField(default=False)
+
+    rejection_reason = models.TextField(blank=True, null=True)
 
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(default=timezone.now)

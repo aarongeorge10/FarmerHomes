@@ -1,11 +1,224 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Farmer Dashboard | Farmer Homes</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --green: #2E7D32;
+            --green-light: #E8F5E9;
+            --dark: #1B1B1B;
+            --bg: #F5F7F6;
+            --radius: 16px;
+            --shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--dark);
+        }
+
+        /* NAVBAR */
+        .navbar {
+            background: white;
+            padding: 16px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo {
+            font-size: 26px;
+        }
+
+        .brand {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--green);
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .welcome-text {
+            font-size: 14px;
+            color: #444;
+        }
+
+        .logout-btn {
+            padding: 8px 16px;
+            background: var(--green);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: background 0.2s ease;
+        }
+
+        .logout-btn:hover {
+            background: #1B5E20;
+        }
+
+
+        /* DASHBOARD */
+        .dashboard {
+            padding: 40px;
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        .welcome-card {
+            background: linear-gradient(135deg, #43A047, #2E7D32);
+            color: white;
+            padding: 30px;
+            border-radius: var(--radius);
+            margin-bottom: 40px;
+            box-shadow: var(--shadow);
+        }
+
+        .welcome-card h1 {
+            margin: 0 0 8px;
+            font-size: 30px;
+        }
+
+        .welcome-card p {
+            margin: 0;
+            opacity: 0.9;
+        }
+
+        /* GRID */
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 25px;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            transition: transform 0.25s ease;
+            cursor: pointer;
+        }
+
+        .card:hover {
+            transform: translateY(-6px);
+        }
+
+        .card h3 {
+            margin-top: 0;
+            color: var(--green);
+        }
+
+        .card p {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        .card a {
+            text-decoration: none;
+            color: var(--green);
+            font-weight: 500;
+        }
+    </style>
 </head>
+
 <body>
-    <h1>hello {{username}}</h1>
+
+    <!-- NAVBAR -->
+    <div class="navbar">
+        <div class="nav-left">
+            <span class="logo">🌱</span>
+            <span class="brand">Farmer Homes</span>
+        </div>
+
+        <div class="nav-right">
+            <span class="welcome-text">
+                Welcome, <strong>{{ username }}</strong>
+            </span>
+
+            <a href="{% url 'logout' %}" class="logout-btn">Logout</a>
+        </div>
+    </div>
+
+    <!-- DASHBOARD CONTENT -->
+    <div class="dashboard">
+
+        <!-- WELCOME -->
+        <div class="welcome-card">
+            <h1>Hello {{ username }} 👋</h1>
+            <p>Your smart agriculture dashboard is ready.</p>
+        </div>
+
+        <!-- ACTION CARDS -->
+        <div class="cards">
+
+            <div class="card">
+                <h3>🌾 Seeds Marketplace</h3>
+                <p>Browse and purchase high-quality seeds for your crops.</p>
+                <a href="#">Explore →</a>
+            </div>
+
+            <div class="card">
+                <h3>🌦 Weather Updates</h3>
+                <p>Get real-time weather insights for better farming decisions.</p>
+                <a href="#">Check Weather →</a>
+            </div>
+
+            <div class="card">
+                <h3>📈 Market Prices</h3>
+                <p>Stay updated with the latest mandi and crop prices.</p>
+                <a href="#">View Prices →</a>
+            </div>
+
+            <div class="card">
+                <h3>📦 Order History</h3>
+                <p>View your past purchases, sales, and transaction details.</p>
+                <a href="#">View Orders →</a>
+            </div>
+
+            <div class="card">
+                <h3>🧾 Sell Crops (Market) </h3>
+                <p>Sell crops directly to buyers with secure QR-code dispatch.</p>
+                <a href="#">Start Selling →</a>
+            </div>
+
+            <div class="card">
+                <h3>🧑‍🌾 My Profile</h3>
+                <p>Manage your personal and farming information.</p>
+                <a href="#">Update Profile →</a>
+            </div>
+
+        </div>
+    </div>
+
 </body>
+
 </html>

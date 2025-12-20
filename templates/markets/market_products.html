@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>{{ market.name }} | Products</title>
+
+    <style>
+        body {
+            background: #f5f7f6;
+            font-family: Arial, sans-serif;
+            padding: 40px;
+        }
+
+        h2 {
+            color: #2E7D32;
+            margin-bottom: 30px;
+        }
+
+        .product-card {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 14px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+        }
+
+        .product-card h3 {
+            margin: 0;
+            color: #1B5E20;
+        }
+
+        .product-card p {
+            margin: 6px 0;
+            color: #555;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h2>{{ market.name }} – Available Products</h2>
+
+    {% for item in products %}
+    <div class="product-card">
+        <h3>{{ item.product.name }}</h3>
+        <p>₹{{ item.price }} / {{ item.unit }}</p>
+        <p>Available: {{ item.quantity_available }}</p>
+        <p>Seller: {{ item.seller.username }}</p>
+    </div>
+    {% empty %}
+    <p>No products available in this market.</p>
+    {% endfor %}
+
+</body>
+
+</html>

@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Admin | Buyer Approvals</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --green: #2E7D32;
+            --green-light: #E8F5E9;
+            --danger: #C62828;
+            --dark: #1B1B1B;
+            --bg: #F5F7F6;
+            --radius: 14px;
+            --shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+        }
+
+        /* NAVBAR */
+        .navbar {
+            background: white;
+            padding: 14px 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+        }
+
+        .brand {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--green);
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark);
+            margin-left: 18px;
+            font-weight: 500;
+            padding: 8px 14px;
+            border-radius: 10px;
+        }
+
+        .nav-links a:hover {
+            background: var(--green-light);
+            color: var(--green);
+        }
+
+        .nav-links .active {
+            background: var(--green);
+            color: white;
+        }
+
+        /* CONTENT */
+        .container {
+            padding: 35px;
+        }
+
+        h2 {
+            color: var(--green);
+            margin-bottom: 25px;
+        }
+
+        table {
+            width: 100%;
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: var(--green);
+            color: white;
+            font-weight: 500;
+        }
+
+        tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        .actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .approve-btn {
+            background: var(--green);
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .reject-btn {
+            background: var(--danger);
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .approve-btn:hover {
+            background: #1B5E20;
+        }
+
+        .reject-btn:hover {
+            background: #B71C1C;
+        }
+
+        .empty {
+            background: white;
+            padding: 30px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            text-align: center;
+            color: #555;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <div class="navbar">
+        <div class="brand">🌾 Farmer Homes | Admin</div>
+        <div class="nav-links">
+            <a href="{% url 'admin_dashboard' %}">Dashboard</a>
+            <a href="{% url 'admin_users' %}">Users</a>
+            <a href="{% url 'admin_products' %}" class="nav-link">Products</a>
+            <a href="{% url 'admin_pending_buyers' %}" class="active">
+                Buyer Approvals
+            </a>
+            <a href="{% url 'logout' %}">Logout</a>
+        </div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="container">
+        <h2>🕒 Pending Buyer Approvals</h2>
+
+        {% if buyers %}
+        <table>
+            <tr>
+                <th>Username</th>
+                <th>Shop Name</th>
+                <th>GST Number</th>
+                <th>Action</th>
+            </tr>
+
+            {% for buyer in buyers %}
+            <tr>
+                <td>{{ buyer.username }}</td>
+                <td>{{ buyer.shop_name }}</td>
+                <td>{{ buyer.gst_number }}</td>
+                <td class="actions">
+                    <a href="{% url 'approve_buyer' buyer.id %}">
+                        <button class="approve-btn">Approve</button>
+                    </a>
+
+                    <button type="button" class="reject-btn" onclick="openRejectModal('{{ buyer.id }}')">
+                        Reject
+                    </button>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% else %}
+        <div class="empty">
+            No pending buyer approvals 🎉
+        </div>
+        {% endif %}
+    </div>
+
+
+
+    <div id="rejectModal" style="
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.4);
+    z-index:1000;
+">
+        <div style="
+        background:white;
+        width:420px;
+        margin:10% auto;
+        padding:25px;
+        border-radius:14px;
+    ">
+            <h3 style="color:#C62828;">Reject Buyer</h3>
+
+            <form method="post" id="rejectForm">
+                {% csrf_token %}
+
+                <label>Reason for rejection</label>
+                <textarea name="reason" required placeholder="Enter rejection reason..."
+                    style="width:100%;padding:10px;margin-top:8px;border-radius:8px;">
+            </textarea>
+
+                <div style="margin-top:18px;text-align:right;">
+                    <button type="button" onclick="closeRejectModal()">Cancel</button>
+                    <button type="submit" class="reject-btn">Reject</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script>
+        function openRejectModal(buyerId) {
+            const modal = document.getElementById("rejectModal");
+            const form = document.getElementById("rejectForm");
+
+            form.action = `/dashboard/buyers/reject/${buyerId}/`;
+            modal.style.display = "block";
+        }
+
+        function closeRejectModal() {
+            document.getElementById("rejectModal").style.display = "none";
+        }
+    </script>
+
+</body>
+
+</html>

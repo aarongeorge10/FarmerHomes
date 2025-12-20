@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.hashers import make_password, check_password
+from django.shortcuts import get_object_or_404
 from .models import AllUser
 from .decorators import admin_required
 from django.contrib.auth import logout
@@ -8,6 +9,8 @@ from django.conf import settings
 from django.utils import timezone
 from django.utils.crypto import get_random_string
 from products.models import Product 
+from .decorators import farmer_required
+from django.views.decorators.http import require_POST
 
 def home(request):
     return render(request, "user/home.html")
@@ -22,6 +25,7 @@ def register(request):
         confirm_password = request.POST.get("confirm_password")
         role = request.POST.get("role")
 
+        # 🔒 VALIDATIONS (from old code)
         if password != confirm_password:
             return render(request, "user/register.html", {
                 "error": "Passwords do not match"
@@ -42,13 +46,29 @@ def register(request):
                 "error": "Admin registration not allowed"
             })
 
-        AllUser.objects.create(
+        # 🔹 CREATE USER
+        user = AllUser.objects.create(
             username=username,
             email=email,
             phone=phone,
             password=make_password(password),
             role=role
         )
+
+        # 🔹 BUYER FLOW (NEW LOGIC)
+        if role == "buyer":
+            user.shop_name = request.POST.get("shop_name")
+            user.gst_number = request.POST.get("gst_number")
+            user.is_approved = False
+            user.save()
+
+            return render(request, "user/register.html", {
+                "success": "Registration submitted. Waiting for admin approval."
+            })
+
+        # 🔹 FARMER FLOW
+        user.is_approved = True
+        user.save()
 
         return redirect("login")
 
@@ -65,7 +85,7 @@ def login_view(request):
             user = AllUser.objects.get(username=username)
         except AllUser.DoesNotExist:
             return render(request, "user/login.html", {
-                "error": "Invalid credentials"
+                "error": "User Doesn't Exist! Please Register"
             })
 
         if not check_password(password, user.password):
@@ -73,7 +93,13 @@ def login_view(request):
                 "error": "Invalid credentials"
             })
 
-        # ✅ SESSION LOGIN
+        # 🚫 BLOCK UNAPPROVED BUYERS
+        if user.role == "buyer" and not user.is_approved:
+            return render(request, "user/login.html", {
+                "error": "Your account is pending admin approval"
+            })
+
+        # ✅ SESSION LOGIN (ONLY AFTER APPROVAL CHECK)
         request.session["user_id"] = user.id
         request.session["username"] = user.username
         request.session["role"] = user.role
@@ -109,6 +135,7 @@ def login_view(request):
     return render(request, "user/login.html")
 
 
+
 @admin_required
 def admin_dashboard(request):
     if request.session.get("role") != "admin":
@@ -131,12 +158,67 @@ def admin_dashboard(request):
 
     return render(request, "admin/dashboard.html", context)
 
+
+@admin_required
+def admin_pending_buyers(request):
+    buyers = AllUser.objects.filter(
+        role="buyer",
+        is_approved=False,
+        is_active=True      # ✅ THIS IS THE FIX
+    )
+    return render(request, "admin/pending_buyers.html", {
+        "buyers": buyers
+    })
+
+
+@admin_required
+def approve_buyer(request, user_id):
+    buyer = get_object_or_404(AllUser, id=user_id, role="buyer")
+    buyer.is_approved = True
+    buyer.save()
+    return redirect("admin_pending_buyers")
+
+
+@admin_required
+@require_POST
+def reject_buyer(request, user_id):
+    buyer = get_object_or_404(AllUser, id=user_id, role="buyer")
+
+    reason = request.POST.get("reason")
+
+    buyer.is_active = False
+    buyer.is_approved = False
+    buyer.rejection_reason = reason
+    buyer.save()
+
+    return redirect("admin_pending_buyers")
+
+
+@admin_required
+@require_POST
+def admin_delete_user(request, user_id):
+    if request.session.get("role") != "admin":
+        return redirect("login")
+
+    user = get_object_or_404(AllUser, id=user_id)
+
+    if user.role == "admin":
+        return redirect("admin_users")
+
+    user.delete()
+    return redirect("admin_users")
+
+
+
 def userlogout(request):
     logout(request)
     return redirect('home')
 
 def user_dashboard(request):
-    return render(request, "user/user_dashboard.html")
+    username = request.session.get("username")
+    return render(request, "user/user_dashboard.html", {
+        "username": username
+    })
 
 # FORGOT PASSWORD
 # ===============================
@@ -235,3 +317,24 @@ def admin_users(request):
 
     users = AllUser.objects.all()
     return render(request, "admin/users.html", {"users": users})
+
+@farmer_required
+def farmer_profile(request):
+    user_id = request.session.get("user_id")
+    user = get_object_or_404(AllUser, id=user_id)
+
+    farmer = user.farmer_profile
+
+    if request.method == "POST":
+        farmer.village = request.POST.get("village")
+        farmer.district = request.POST.get("district")
+        farmer.state = request.POST.get("state")
+
+        farmer.latitude = request.POST.get("latitude") or farmer.latitude
+        farmer.longitude = request.POST.get("longitude") or farmer.longitude
+
+        farmer.save()
+
+    return render(request, "user/profile.html", {
+        "farmer": farmer
+    })

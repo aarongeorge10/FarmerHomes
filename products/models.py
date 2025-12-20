@@ -1,4 +1,7 @@
 from django.db import models
+from farmersaccapp.models import AllUser
+from markets.models import Market
+
 
 class ProductCategory(models.Model):
     key = models.CharField(max_length=30, unique=True)
@@ -49,3 +52,33 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class MarketProduct(models.Model):
+    product = models.ForeignKey(
+        Product,
+        on_delete=models.CASCADE,
+        related_name="market_listings"
+    )
+
+    market = models.ForeignKey(
+        Market,
+        on_delete=models.CASCADE,
+        related_name="products"
+    )
+
+    seller = models.ForeignKey(
+        AllUser,
+        on_delete=models.CASCADE,
+        limit_choices_to={"role": "buyer"}
+    )
+
+    price = models.DecimalField(max_digits=8, decimal_places=2)
+    quantity_available = models.PositiveIntegerField()
+    unit = models.CharField(max_length=30)  # kg, bag, litre
+
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.product.name} @ {self.market.name}"

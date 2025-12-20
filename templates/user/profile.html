@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form method="post">
+    {% csrf_token %}
+
+    <label>Village</label>
+    <input name="village" value="{{ farmer.village }}">
+
+    <label>District</label>
+    <input name="district" value="{{ farmer.district }}">
+
+    <label>State</label>
+    <input name="state" value="{{ farmer.state }}">
+
+    <!-- 📍 LOCATION BUTTON -->
+    <button type="button" onclick="getLocation()">
+        📍 Detect My Location
+    </button>
+
+    <!-- HIDDEN FIELDS -->
+    <input type="hidden" name="latitude" id="latitude" value="{{ farmer.latitude }}">
+    <input type="hidden" name="longitude" id="longitude" value="{{ farmer.longitude }}">
+
+    <button type="submit">Save Profile</button>
+</form>
+
+<script>
+function getLocation() {
+    if (!navigator.geolocation) {
+        alert("Geolocation not supported");
+        return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+        function(position) {
+            document.getElementById("latitude").value =
+                position.coords.latitude;
+            document.getElementById("longitude").value =
+                position.coords.longitude;
+
+            alert("Location detected successfully");
+        },
+        function() {
+            alert("Please allow location access");
+        }
+    );
+}
+</script>
+</body>
+</html>

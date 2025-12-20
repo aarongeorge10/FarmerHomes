@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Available Markets | Farmer Homes</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --green: #2E7D32;
+            --dark: #1B1B1B;
+            --bg: #F5F7F6;
+            --radius: 16px;
+            --shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            font-family: "Poppins", sans-serif;
+            padding-top: 90px;
+        }
+
+        /* NAVBAR */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            height: 70px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(12px);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            box-shadow: var(--shadow);
+            box-sizing: border-box;
+        }
+
+        .navbar h1 {
+            color: var(--green);
+            font-size: 22px;
+        }
+
+        .navbar a {
+            text-decoration: none;
+            color: var(--dark);
+            margin-left: 20px;
+            font-weight: 500;
+        }
+
+        .navbar a:hover {
+            color: var(--green);
+            transform: translateY(-1px);
+        }
+
+        /* GRID */
+        .market-grid {
+            max-width: 1200px;
+            margin: auto;
+            padding: 0 30px 60px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .market-card {
+            background: #fff;
+            border-radius: var(--radius);
+            padding: 25px;
+            box-shadow: var(--shadow);
+            transition: transform .3s ease;
+        }
+
+        .market-card:hover {
+            transform: translateY(-8px);
+        }
+
+        .market-card h3 {
+            margin-top: 0;
+            color: var(--green);
+        }
+
+        .market-card p {
+            color: #555;
+            font-size: 14px;
+        }
+
+        /* BUTTON */
+        .view-btn {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 10px 18px;
+            background: var(--green);
+            color: white;
+            text-decoration: none;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background .3s ease;
+        }
+
+        .view-btn:hover {
+            background: #256628;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <div class="navbar">
+        <h1>🌾 Farmer Homes</h1>
+        <div>
+            <a href="{% url 'home' %}">Home</a>
+            <a href="{% url 'login' %}">Login</a>
+        </div>
+    </div>
+
+    <!-- MARKETS -->
+    <div class="market-grid">
+        {% for market in markets %}
+        <div class="market-card">
+            <h3>{{ market.name }}</h3>
+            <p>{{ market.address }}</p>
+            <p>{{ market.village }}, {{ market.district }}, {{ market.state }}</p>
+
+            <!-- ✅ VIEW PRODUCTS BUTTON -->
+            <a href="{% url 'market_products' market.id %}" class="view-btn">
+                View Products
+            </a>
+        </div>
+        {% empty %}
+        <p>No markets available</p>
+        {% endfor %}
+    </div>
+
+</body>
+
+</html>

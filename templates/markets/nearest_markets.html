@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h2>Nearest Markets</h2>
+
+{% for item in markets %}
+<div class="market-card">
+    <h3>{{ item.market.name }}</h3>
+    <p>{{ item.market.address }}</p>
+
+    {% if item.distance %}
+        <p>📍 {{ item.distance }} km away</p>
+    {% else %}
+        <p>Please update your location</p>
+    {% endif %}
+
+    <a href="#">Sell Here</a>
+</div>
+{% endfor %}
+</body>
+</html>

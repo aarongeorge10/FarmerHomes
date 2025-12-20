@@ -23,6 +23,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('',include("farmersaccapp.urls")),
     path("products/", include("products.urls")),
-
+    path("markets/", include("markets.urls")),
 ]
 urlpatterns+= static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
