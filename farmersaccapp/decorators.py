@@ -14,12 +14,15 @@ def admin_required(view_func):
 
 def farmer_required(view_func):
     def wrapper(request, *args, **kwargs):
-        if not request.session.get("user_id"):
+        user_id = request.session.get("user_id")
+        if not user_id:
             return redirect("login")
 
-        if request.session.get("role") != "farmer":
+        user = AllUser.objects.get(id=user_id)
+        if user.role != "farmer":
             return redirect("login")
 
+        request.current_user = user   # 🔥 attach once
         return view_func(request, *args, **kwargs)
     return wrapper
 

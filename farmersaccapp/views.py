@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.hashers import make_password, check_password
 from django.shortcuts import get_object_or_404
-from .models import AllUser
+from .models import AllUser ,FarmerProfile
 from .decorators import admin_required
 from django.contrib.auth import logout
 from django.core.mail import send_mail
@@ -318,23 +318,34 @@ def admin_users(request):
     users = AllUser.objects.all()
     return render(request, "admin/users.html", {"users": users})
 
+
 @farmer_required
 def farmer_profile(request):
     user_id = request.session.get("user_id")
     user = get_object_or_404(AllUser, id=user_id)
 
-    farmer = user.farmer_profile
+    # ✅ ensures farmer profile always exists
+    farmer, created = FarmerProfile.objects.get_or_create(user=user)
 
     if request.method == "POST":
         farmer.village = request.POST.get("village")
         farmer.district = request.POST.get("district")
         farmer.state = request.POST.get("state")
+        farmer.soil_type = request.POST.get("soil_type")
+        farmer.farm_area_acres = request.POST.get("farm_area_acres")
+        farmer.bank_account_number = request.POST.get("bank_account_number")
+        farmer.ifsc_code = request.POST.get("ifsc_code")
 
-        farmer.latitude = request.POST.get("latitude") or farmer.latitude
-        farmer.longitude = request.POST.get("longitude") or farmer.longitude
+
+        # 📍 location fields
+        lat = request.POST.get("latitude")
+        lng = request.POST.get("longitude")
+
+        if lat:
+            farmer.latitude = float(lat)
+        if lng:
+            farmer.longitude = float(lng)
 
         farmer.save()
 
-    return render(request, "user/profile.html", {
-        "farmer": farmer
-    })
+    return render(request, "user/profile.html", {"farmer": farmer})

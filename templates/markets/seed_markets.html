@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>Nearby Markets</title>
+    <title>Seed Markets</title>
 
     <style>
         body {
@@ -13,7 +13,7 @@
 
         h2 {
             color: #2E7D32;
-            margin-bottom: 25px;
+            margin-bottom: 30px;
         }
 
         .market-card {
@@ -24,18 +24,12 @@
             margin-bottom: 20px;
         }
 
-        .market-card h3 {
-            margin: 0;
-            color: #2E7D32;
-        }
-
         .distance {
             font-size: 14px;
             color: #555;
-            margin: 6px 0;
         }
 
-        .sell-btn {
+        .btn {
             display: inline-block;
             margin-top: 10px;
             padding: 8px 16px;
@@ -43,47 +37,26 @@
             color: white;
             text-decoration: none;
             border-radius: 8px;
-            font-size: 14px;
-        }
-
-        .sell-btn:hover {
-            background: #1B5E20;
-        }
-
-        .warning {
-            background: #fff3cd;
-            padding: 15px;
-            border-radius: 10px;
-            color: #856404;
         }
     </style>
 </head>
 
 <body>
 
-    <h2>📍 Nearby Markets</h2>
-
-    {% if not has_location %}
-    <div class="warning">
-        Please update your latitude and longitude in your profile to see nearby markets.
-    </div>
-    {% endif %}
+    <h2>🌱 Seed Markets Near You</h2>
 
     {% for item in markets %}
     <div class="market-card">
         <h3>{{ item.market.name }}</h3>
         <p>{{ item.market.village }}, {{ item.market.district }}</p>
+        <p class="distance">📍 {{ item.distance }} km away</p>
 
-        <p class="distance">
-            Distance: {{ item.distance }} km
-        </p>
-
-        <a href="{% url 'market_products' item.market.id %}" class="sell-btn">
-            Sell Crops →
+        <a href="{% url 'market_products' item.market.id %}?category=seed">
+            View Seed Products →
         </a>
     </div>
     {% empty %}
-    <p>No nearby markets found.</p>
+    <p>No seed markets found nearby.</p>
     {% endfor %}
 
 </body>

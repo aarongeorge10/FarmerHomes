@@ -1,34 +1,201 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Farmer Profile</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --green: #2E7D32;
+            --green-dark: #1B5E20;
+            --bg: #F5F7F6;
+            --card: #ffffff;
+            --radius: 16px;
+            --shadow: 0 12px 30px rgba(0,0,0,0.12);
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            padding-top: 80px;
+        }
+
+        /* NAVBAR */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            height: 70px;
+            background: linear-gradient(90deg, var(--green-dark), var(--green));
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            z-index: 1000;
+        }
+
+        .navbar h2 {
+            margin: 0;
+            font-size: 22px;
+            font-weight: 600;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            margin-left: 25px;
+            font-weight: 500;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: "";
+            position: absolute;
+            width: 0;
+            height: 2px;
+            background: white;
+            left: 0;
+            bottom: -6px;
+            transition: 0.3s;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* PROFILE CARD */
+        .profile-card {
+            max-width: 600px;
+            background: var(--card);
+            margin: auto;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 35px;
+        }
+
+        .profile-card h3 {
+            text-align: center;
+            color: var(--green);
+            margin-bottom: 30px;
+            font-size: 26px;
+        }
+
+        label {
+            font-weight: 500;
+            margin-top: 15px;
+            display: block;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+            margin-top: 6px;
+            font-size: 14px;
+        }
+
+        /* BUTTONS */
+        .location-btn {
+            width: 100%;
+            background: #E8F5E9;
+            color: var(--green);
+            border: none;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            margin-top: 25px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .location-btn:hover {
+            background: #C8E6C9;
+        }
+
+        .save-btn {
+            width: 100%;
+            background: var(--green);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            margin-top: 30px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .save-btn:hover {
+            background: var(--green-dark);
+        }
+    </style>
 </head>
 <body>
+
+<!-- NAVBAR -->
+<div class="navbar">
+    <h2>🌱 Farmer Dashboard</h2>
+    <div class="nav-links">
+        <a href="{% url 'user_dashboard' %}">Dashboard</a>
+        <a href="{% url 'farmer_profile' %}">Profile</a>
+        <a href="{% url 'logout' %}">Logout</a>
+    </div>
+</div>
+
+<!-- PROFILE FORM -->
+<div class="profile-card">
+    <h3>Farmer Profile</h3>
+
     <form method="post">
-    {% csrf_token %}
+        {% csrf_token %}
 
-    <label>Village</label>
-    <input name="village" value="{{ farmer.village }}">
+        <label>Village</label>
+        <input name="village" value="{{ farmer.village }}" >
 
-    <label>District</label>
-    <input name="district" value="{{ farmer.district }}">
+        <label>District</label>
+        <input name="district" value="{{ farmer.district }}">
 
-    <label>State</label>
-    <input name="state" value="{{ farmer.state }}">
+        <label>State</label>
+        <input name="state" value="{{ farmer.state }}">
 
-    <!-- 📍 LOCATION BUTTON -->
-    <button type="button" onclick="getLocation()">
-        📍 Detect My Location
-    </button>
+        <label>Soil Type</label>
+        <input name="soil_type" value="{{ farmer.soil_type }}">
 
-    <!-- HIDDEN FIELDS -->
-    <input type="hidden" name="latitude" id="latitude" value="{{ farmer.latitude }}">
-    <input type="hidden" name="longitude" id="longitude" value="{{ farmer.longitude }}">
+        <label >Farm Area Acres</label>
+        <input name="farm_area_acres" value="{{ farmer.farm_area_acres }}">
 
-    <button type="submit">Save Profile</button>
-</form>
+        <label >Bank Account Number</label>
+        <input name="bank_account_number" value="{{ farmer.bank_account_number }}" maxlength="14">
+
+        <label >IFSC Code</label>
+        <input name="ifsc_code" value="{{ farmer.ifsc_code }}" maxlength="11">
+
+        <!-- 📍 LOCATION BUTTON -->
+        <button type="button" class="location-btn" onclick="getLocation()">
+            📍 Detect My Location
+        </button>
+
+        <!-- HIDDEN FIELDS -->
+        <input type="hidden" name="latitude" id="latitude" value="{{ farmer.latitude }}">
+        <input type="hidden" name="longitude" id="longitude" value="{{ farmer.longitude }}">
+
+        <button type="submit" class="save-btn">Save Profile</button>
+    </form>
+</div>
 
 <script>
 function getLocation() {
@@ -39,12 +206,9 @@ function getLocation() {
 
     navigator.geolocation.getCurrentPosition(
         function(position) {
-            document.getElementById("latitude").value =
-                position.coords.latitude;
-            document.getElementById("longitude").value =
-                position.coords.longitude;
-
-            alert("Location detected successfully");
+            document.getElementById("latitude").value = position.coords.latitude;
+            document.getElementById("longitude").value = position.coords.longitude;
+            alert("📍 Location detected successfully");
         },
         function() {
             alert("Please allow location access");
@@ -52,5 +216,6 @@ function getLocation() {
     );
 }
 </script>
+
 </body>
 </html>

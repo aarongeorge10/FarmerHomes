@@ -183,7 +183,7 @@
             <div class="card">
                 <h3>🌾 Seeds Marketplace</h3>
                 <p>Browse and purchase high-quality seeds for your crops.</p>
-                <a href="#">Explore →</a>
+                <a href="{% url 'seed_markets' %}">Explore →</a>
             </div>
 
             <div class="card">
@@ -193,27 +193,21 @@
             </div>
 
             <div class="card">
-                <h3>📈 Market Prices</h3>
-                <p>Stay updated with the latest mandi and crop prices.</p>
-                <a href="#">View Prices →</a>
-            </div>
-
-            <div class="card">
                 <h3>📦 Order History</h3>
                 <p>View your past purchases, sales, and transaction details.</p>
                 <a href="#">View Orders →</a>
             </div>
 
             <div class="card">
-                <h3>🧾 Sell Crops (Market) </h3>
-                <p>Sell crops directly to buyers with secure QR-code dispatch.</p>
-                <a href="#">Start Selling →</a>
+                <h3>📈 Sell Crops (Market) </h3>
+                <p>Sell crops directly to buyers, Stay updated with the latest mandi and crop prices. </p>
+                <a href="{% url 'nearest_markets' %}">Find Nearby Markets →</a>
             </div>
 
             <div class="card">
                 <h3>🧑‍🌾 My Profile</h3>
                 <p>Manage your personal and farming information.</p>
-                <a href="#">Update Profile →</a>
+                <a href="{% url 'farmer_profile' %}">Update Profile →</a>
             </div>
 
         </div>

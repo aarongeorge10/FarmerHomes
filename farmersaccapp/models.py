@@ -46,14 +46,19 @@ class FarmerProfile(models.Model):
     district = models.CharField(max_length=100, blank=True, null=True)
     state = models.CharField(max_length=100, blank=True, null=True)
 
+    # 📍 GEO LOCATION (RECOMMENDED)
+    latitude = models.FloatField(blank=True, null=True)
+    longitude = models.FloatField(blank=True, null=True)
+
     soil_type = models.CharField(max_length=100, blank=True, null=True)
     farm_area_acres = models.DecimalField(max_digits=6, decimal_places=2, blank=True, null=True)
 
-    bank_account_number = models.CharField(max_length=30, blank=True, null=True)
-    ifsc_code = models.CharField(max_length=20, blank=True, null=True)
+    bank_account_number = models.CharField(max_length=14, blank=True, null=True)
+    ifsc_code = models.CharField(max_length=11, blank=True, null=True)
 
     def __str__(self):
-        return f"Farmer: {self.user.username}"
+        return self.user.username
+
 
 
 class BuyerProfile(models.Model):

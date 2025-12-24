@@ -15,4 +15,5 @@ urlpatterns = [
     path("dashboard/buyers/pending/", views.admin_pending_buyers,name="admin_pending_buyers"),
     path("dashboard/buyers/approve/<int:user_id>/", views.approve_buyer,name="approve_buyer"),
     path("dashboard/buyers/reject/<int:user_id>/", views.reject_buyer,name="reject_buyer"),
+    path("farmer_profile/", views.farmer_profile, name="farmer_profile"),
 ]
