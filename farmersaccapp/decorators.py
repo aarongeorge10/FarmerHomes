@@ -38,3 +38,4 @@ def buyer_required(view_func):
         return view_func(request, *args, **kwargs)
     return wrapper
 
+

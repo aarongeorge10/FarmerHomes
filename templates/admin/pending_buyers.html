@@ -164,22 +164,22 @@
         <table>
             <tr>
                 <th>Username</th>
-                <th>Shop Name</th>
+                <th>Shop / Business Name</th>
                 <th>GST Number</th>
                 <th>Action</th>
             </tr>
 
             {% for buyer in buyers %}
             <tr>
-                <td>{{ buyer.username }}</td>
-                <td>{{ buyer.shop_name }}</td>
+                <td>{{ buyer.user.username }}</td>
+                <td>{{ buyer.business_name }}</td>
                 <td>{{ buyer.gst_number }}</td>
                 <td class="actions">
-                    <a href="{% url 'approve_buyer' buyer.id %}">
+                    <a href="{% url 'approve_buyer' buyer.user.id %}">
                         <button class="approve-btn">Approve</button>
                     </a>
 
-                    <button type="button" class="reject-btn" onclick="openRejectModal('{{ buyer.id }}')">
+                    <button type="button" class="reject-btn" onclick="openRejectModal('{{ buyer.user.id }}')">
                         Reject
                     </button>
                 </td>

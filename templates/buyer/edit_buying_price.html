@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Buying Price</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --green: #2E7D32;
+            --green-dark: #1B5E20;
+            --green-light: #E8F5E9;
+            --bg: #F5F7F6;
+            --radius: 16px;
+            --shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+        }
+
+        /* TOP NAVBAR */
+        .navbar {
+            height: 70px;
+            background: linear-gradient(90deg, var(--green-dark), var(--green));
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .navbar .logo {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 25px;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: 0.25s;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            background: rgba(255, 255, 255, 0.18);
+        }
+
+        /* MAIN CONTENT */
+        .main {
+            padding: 50px 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        /* CARD */
+        .card {
+            width: 100%;
+            max-width: 520px;
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 35px;
+        }
+
+        .card h3 {
+            color: var(--green);
+            margin-top: 0;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        label {
+            font-weight: 500;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 22px;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+        }
+
+        button {
+            width: 100%;
+            background: var(--green);
+            color: white;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.25s;
+        }
+
+        button:hover {
+            background: var(--green-dark);
+            transform: translateY(-2px);
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 0 20px;
+            }
+
+            .nav-links {
+                gap: 12px;
+            }
+
+            .nav-links a {
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- TOP NAVBAR -->
+    <div class="navbar">
+        <div class="logo">🌾 Buyer Panel</div>
+
+        <div class="nav-links">
+            <a href="{% url 'buyer_dashboard' %}">Dashboard</a>
+            <a href="{% url 'buyer_dashboard' %}" class="active">Buying Prices</a>
+            <a href="#">Shop Products</a>
+            <a href="#">Sell Requests</a>
+            <a href="{% url 'logout' %}">Logout</a>
+        </div>
+    </div>
+
+    <!-- MAIN -->
+    <div class="main">
+        <div class="card">
+            <h3>✏️ Edit Buying Price</h3>
+
+            <form method="post">
+                {% csrf_token %}
+
+                <label>Price per unit (₹)</label>
+                <input type="number" step="0.01" name="price_per_unit" value="{{ price.price_per_unit }}" required>
+
+                <label>Minimum Quantity</label>
+                <input type="number" name="min_quantity" value="{{ price.min_quantity }}" required>
+
+                <label>Unit</label>
+                <input type="text" name="unit" value="{{ price.unit }}">
+
+                <button type="submit">Update Buying Price</button>
+            </form>
+        </div>
+    </div>
+
+</body>
+
+</html>

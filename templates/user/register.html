@@ -207,8 +207,8 @@
                 </select>
 
                 <div id="buyer-fields" style="display:none;">
-                    <input name="shop_name" placeholder="Shop / Business Name" required>
-                    <input name="gst_number" placeholder="GST Number" required>
+                    <input name="shop_name" id="shop_name" placeholder="Shop / Business Name">
+                    <input name="gst_number" id="gst_number" placeholder="GST Number">
                 </div>
             </div>
 
@@ -225,10 +225,24 @@
     <script>
         function toggleBuyerFields() {
             const role = document.getElementById("role").value;
-            document.getElementById("buyer-fields").style.display =
-                role === "buyer" ? "block" : "none";
+            const buyerFields = document.getElementById("buyer-fields");
+
+            const shop = document.getElementById("shop_name");
+            const gst = document.getElementById("gst_number");
+
+            if (role === "buyer") {
+                buyerFields.style.display = "block";
+                shop.required = true;
+                gst.required = true;
+            } else {
+                buyerFields.style.display = "none";
+                shop.required = false;
+                gst.required = false;
+            }
         }
     </script>
+
+
 </body>
 
 </html>

@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Buyer Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --green: #2E7D32;
+            --green-dark: #1B5E20;
+            --green-light: #E8F5E9;
+            --bg: #F5F7F6;
+            --dark: #1B1B1B;
+            --radius: 16px;
+            --shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            display: flex;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 260px;
+            height: 100vh;
+            background: linear-gradient(180deg, var(--green-dark), var(--green));
+            color: white;
+            position: fixed;
+            padding: 30px 20px;
+        }
+
+        .sidebar h2 {
+            text-align: left;
+            margin-bottom: 40px;
+            font-size: 22px;
+            color: white;
+        }
+
+        .sidebar a {
+            display: flex;
+            align-items: center;
+            color: white;
+            text-decoration: none;
+            padding: 14px 18px;
+            margin-bottom: 12px;
+            border-radius: 12px;
+            font-size: 15px;
+            transition: 0.25s;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            background: rgba(255, 255, 255, 0.18);
+        }
+
+        .sidebar a span {
+            margin-left: 10px;
+        }
+
+        /* MAIN CONTENT */
+        .main {
+            margin-left: 260px;
+            padding: 40px;
+            width: calc(100% - 260px);
+        }
+
+        h2 {
+            color: var(--green-dark);
+            margin-bottom: 25px;
+        }
+
+        /* CARD */
+        .card {
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 25px;
+            margin-bottom: 35px;
+        }
+
+        .card h3 {
+            margin-top: 0;
+            color: var(--green);
+            margin-bottom: 18px;
+        }
+
+        .add-btn {
+            background: var(--green);
+            color: white;
+            text-decoration: none;
+            padding: 10px 18px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: 0.25s;
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
+        }
+
+        .add-btn:hover {
+            background: var(--green-dark);
+            transform: translateY(-2px);
+        }
+
+
+        /* TABLE */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 14px;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 14px;
+        }
+
+        th {
+            background: var(--green-light);
+            color: var(--green-dark);
+        }
+
+        tr:hover {
+            background: #f9fbf9;
+        }
+
+        /* BADGES */
+        .badge {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .active-badge {
+            background: #C8E6C9;
+            color: #1B5E20;
+        }
+
+        .inactive-badge {
+            background: #FFCDD2;
+            color: #B71C1C;
+        }
+
+        .price-table th,
+        .price-table td {
+            vertical-align: middle;
+        }
+
+        /* Alignment helpers */
+        .left {
+            text-align: left;
+        }
+
+        .center {
+            text-align: center;
+        }
+
+        /* Improve row height consistency */
+        .price-table tr {
+            height: 56px;
+        }
+
+        /* Badge centering polish */
+        .badge {
+            display: inline-block;
+            min-width: 70px;
+            text-align: center;
+        }
+
+        .actions {
+            white-space: nowrap;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 8px;
+            font-size: 13px;
+            text-decoration: none;
+            margin: 0 3px;
+            transition: 0.2s;
+        }
+
+        .btn.edit {
+            background: #E3F2FD;
+            color: #1565C0;
+        }
+
+        .btn.disable {
+            background: #FFEBEE;
+            color: #C62828;
+        }
+
+        .btn.enable {
+            background: #E8F5E9;
+            color: #2E7D32;
+        }
+
+        .btn:hover {
+            transform: scale(1.08);
+        }
+
+
+        /* RESPONSIVE */
+        @media (max-width: 900px) {
+            .sidebar {
+                width: 70px;
+                padding: 25px 10px;
+            }
+
+            .sidebar h2,
+            .sidebar a span {
+                display: none;
+            }
+
+            .main {
+                margin-left: 70px;
+                width: calc(100% - 70px);
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <h2>🌾 Buyer Dashboard</h2>
+        <a href="{% url 'buyer_dashboard' %}" class="active">📊 <span>Dashboard</span></a>
+        <a href="#">📉 <span>Buying Prices</span></a>
+        <a href="#">🛒 <span>Shop Products</span></a>
+        <a href="#">📦 <span>Sell Requests</span></a>
+        <a href="#">🚪 <span>Logout</span></a>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main">
+
+        <h2>Welcome, {{ buyer.business_name }}</h2>
+
+        <!-- BUSINESS INFO -->
+        <div class="card">
+            <h3>🏢 Business Information</h3>
+            <p><strong>GST Number:</strong> {{ buyer.gst_number }}</p>
+        </div>
+
+        <!-- BUYING PRICES -->
+        <div class="card">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <h3>📉 Buying Prices (Farmers Sell Here)</h3>
+
+                <a href="{% url 'add_buying_price' %}" class="add-btn">
+                    ➕ Add Buying Price
+                </a>
+            </div>
+            <table class="price-table">
+                <tr>
+                    <th class="left">Product</th>
+                    <th class="center">Price</th>
+                    <th class="center">Min Qty</th>
+                    <th class="center">Status</th>
+                    <th class="center">Actions</th>
+                </tr>
+
+                {% for price in buy_prices %}
+                <tr>
+                    <td class="left">{{ price.product.name }}</td>
+                    <td class="center">₹{{ price.price_per_unit }} / {{ price.unit }}</td>
+                    <td class="center">{{ price.min_quantity }}</td>
+                    <td class="center">
+                        {% if price.is_active %}
+                        <span class="badge active-badge">Active</span>
+                        {% else %}
+                        <span class="badge inactive-badge">Inactive</span>
+                        {% endif %}
+                    </td>
+                    <td class="center actions">
+                        <a href="{% url 'edit_buying_price' price.id %}" class="btn edit">✏️</a>
+
+                        {% if price.is_active %}
+                        <a href="{% url 'toggle_buying_price' price.id %}" class="btn disable">⛔</a>
+                        {% else %}
+                        <a href="{% url 'toggle_buying_price' price.id %}" class="btn enable">▶️</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+
+
+        </div>
+
+        <!-- SHOP PRODUCTS -->
+        <div class="card">
+            <h3>🛒 My Shop Products (Farmers Buy Here)</h3>
+            <table>
+                <tr>
+                    <th>Product</th>
+                    <th>Price</th>
+                    <th>Stock</th>
+                </tr>
+                {% for item in shop_products %}
+                <tr>
+                    <td>{{ item.product.name }}</td>
+                    <td>₹{{ item.price }}</td>
+                    <td>{{ item.stock_quantity }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="3">No shop products added</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+
+        <!-- SELL REQUESTS -->
+        <div class="card">
+            <h3>📦 Pending Sell Requests</h3>
+            <table>
+                <tr>
+                    <th>Farmer</th>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                </tr>
+                {% for req in sell_requests %}
+                <tr>
+                    <td>{{ req.farmer.user.username }}</td>
+                    <td>{{ req.buyer_price.product.name }}</td>
+                    <td>{{ req.quantity }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="3">No pending requests</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+
+    </div>
+
+</body>
+
+</html>

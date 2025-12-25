@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'farmersaccapp',
     'products',
     'markets',
+    'buyersapp',
 ]
 
 MIDDLEWARE = [

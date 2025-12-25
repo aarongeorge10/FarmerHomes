@@ -19,10 +19,6 @@ class AllUser(models.Model):
     reset_token = models.CharField(max_length=100, null=True, blank=True)
     reset_token_created = models.DateTimeField(null=True, blank=True)
 
-    # 🔹 Buyer specific
-    shop_name = models.CharField(max_length=200, blank=True, null=True)
-    gst_number = models.CharField(max_length=20, blank=True, null=True)
-
     # 🔹 Approval system
     is_approved = models.BooleanField(default=False)
 

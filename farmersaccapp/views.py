@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.hashers import make_password, check_password
 from django.shortcuts import get_object_or_404
-from .models import AllUser ,FarmerProfile
+from .models import AllUser , FarmerProfile ,BuyerProfile
 from .decorators import admin_required
 from django.contrib.auth import logout
 from django.core.mail import send_mail
@@ -11,10 +11,10 @@ from django.utils.crypto import get_random_string
 from products.models import Product 
 from .decorators import farmer_required
 from django.views.decorators.http import require_POST
+from buyersapp.models import BuyerBuyPrice
 
 def home(request):
     return render(request, "user/home.html")
-
 
 def register(request):
     if request.method == "POST":
@@ -25,7 +25,9 @@ def register(request):
         confirm_password = request.POST.get("confirm_password")
         role = request.POST.get("role")
 
-        # 🔒 VALIDATIONS (from old code)
+        role = role.lower() if role else role
+
+        # 🔒 BASIC VALIDATIONS
         if password != confirm_password:
             return render(request, "user/register.html", {
                 "error": "Passwords do not match"
@@ -46,24 +48,38 @@ def register(request):
                 "error": "Admin registration not allowed"
             })
 
-        # 🔹 CREATE USER
+        # ✅ CREATE USER
         user = AllUser.objects.create(
             username=username,
             email=email,
             phone=phone,
             password=make_password(password),
-            role=role
+            role=role,
+            is_active=True
         )
 
-        # 🔹 BUYER FLOW (NEW LOGIC)
+        # 🔹 BUYER FLOW
         if role == "buyer":
-            user.shop_name = request.POST.get("shop_name")
-            user.gst_number = request.POST.get("gst_number")
+            shop_name = request.POST.get("shop_name")
+            gst_number = request.POST.get("gst_number")
+
+            if not shop_name or not gst_number:
+                return render(request, "user/register.html", {
+                    "error": "Shop name and GST number are required for buyers"
+                })
+
+            BuyerProfile.objects.create(
+                user=user,
+                business_name=shop_name,
+                gst_number=gst_number,
+                is_exporter=False
+            )
+
             user.is_approved = False
             user.save()
 
-            return render(request, "user/register.html", {
-                "success": "Registration submitted. Waiting for admin approval."
+            return render(request, "user/login.html", {
+                "success": "Registration successful. Waiting for admin approval."
             })
 
         # 🔹 FARMER FLOW
@@ -73,6 +89,7 @@ def register(request):
         return redirect("login")
 
     return render(request, "user/register.html")
+
 
 
 
@@ -130,7 +147,7 @@ def login_view(request):
         elif user.role == "farmer":
             return redirect("user_dashboard")
         else:
-            return redirect("home")
+            return redirect("buyer_dashboard")
 
     return render(request, "user/login.html")
 
@@ -161,11 +178,12 @@ def admin_dashboard(request):
 
 @admin_required
 def admin_pending_buyers(request):
-    buyers = AllUser.objects.filter(
-        role="buyer",
-        is_approved=False,
-        is_active=True      # ✅ THIS IS THE FIX
+    buyers = BuyerProfile.objects.select_related("user").filter(
+        user__role="buyer",
+        user__is_approved=False,
+        user__is_active=True
     )
+
     return render(request, "admin/pending_buyers.html", {
         "buyers": buyers
     })
@@ -173,23 +191,21 @@ def admin_pending_buyers(request):
 
 @admin_required
 def approve_buyer(request, user_id):
-    buyer = get_object_or_404(AllUser, id=user_id, role="buyer")
-    buyer.is_approved = True
-    buyer.save()
+    user = get_object_or_404(AllUser, id=user_id, role="buyer")
+    user.is_approved = True
+    user.save()
     return redirect("admin_pending_buyers")
 
 
 @admin_required
 @require_POST
 def reject_buyer(request, user_id):
-    buyer = get_object_or_404(AllUser, id=user_id, role="buyer")
+    user = get_object_or_404(AllUser, id=user_id, role="buyer")
 
-    reason = request.POST.get("reason")
-
-    buyer.is_active = False
-    buyer.is_approved = False
-    buyer.rejection_reason = reason
-    buyer.save()
+    user.is_active = False
+    user.is_approved = False
+    user.rejection_reason = request.POST.get("reason")
+    user.save()
 
     return redirect("admin_pending_buyers")
 
@@ -349,3 +365,15 @@ def farmer_profile(request):
         farmer.save()
 
     return render(request, "user/profile.html", {"farmer": farmer})
+
+
+
+def compare_buyers(request, product_id):
+    prices = BuyerBuyPrice.objects.filter(
+        product_id=product_id,
+        is_active=True
+    ).order_by('-price_per_unit')
+
+    return render(request, "farmer/compare_buyers.html", {
+        "prices": prices
+    })
