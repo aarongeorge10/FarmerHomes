@@ -95,7 +95,8 @@
             margin-bottom: 6px;
         }
 
-        input {
+        input,
+        select {
             width: 100%;
             padding: 12px;
             margin-bottom: 22px;
@@ -147,7 +148,7 @@
 
         <div class="nav-links">
             <a href="{% url 'buyer_dashboard' %}">Dashboard</a>
-            <a href="{% url 'buyer_dashboard' %}" class="active">Buying Prices</a>
+            <a href="{% url 'buyer_buying_prices' %}" class="active">Buying Prices</a>
             <a href="#">Shop Products</a>
             <a href="#">Sell Requests</a>
             <a href="{% url 'logout' %}">Logout</a>
@@ -161,6 +162,15 @@
 
             <form method="post">
                 {% csrf_token %}
+
+                <label>Market</label>
+                <select name="market" required>
+                    {% for market in markets %}
+                    <option value="{{ market.id }}" {% if market.id == price.market.id %}selected{% endif %}>
+                        {{ market.name }} - {{ market.district }}
+                    </option>
+                    {% endfor %}
+                </select>
 
                 <label>Price per unit (₹)</label>
                 <input type="number" step="0.01" name="price_per_unit" value="{{ price.price_per_unit }}" required>

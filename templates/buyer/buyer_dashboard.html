@@ -241,10 +241,10 @@
     <div class="sidebar">
         <h2>🌾 Buyer Dashboard</h2>
         <a href="{% url 'buyer_dashboard' %}" class="active">📊 <span>Dashboard</span></a>
-        <a href="#">📉 <span>Buying Prices</span></a>
-        <a href="#">🛒 <span>Shop Products</span></a>
+        <a href="{% url 'buyer_buying_prices' %}">📉 <span>Buying Prices</span></a>
+        <a href="{% url 'buyer_shop_products' %}">🛒 <span>Shop Products</span></a>
         <a href="#">📦 <span>Sell Requests</span></a>
-        <a href="#">🚪 <span>Logout</span></a>
+        <a href="{% url 'logout' %}">🚪 <span>Logout</span></a>
     </div>
 
     <!-- MAIN CONTENT -->
@@ -263,15 +263,14 @@
             <div style="display:flex; justify-content:space-between; align-items:center;">
                 <h3>📉 Buying Prices (Farmers Sell Here)</h3>
 
-                <a href="{% url 'add_buying_price' %}" class="add-btn">
-                    ➕ Add Buying Price
-                </a>
+                
             </div>
             <table class="price-table">
                 <tr>
                     <th class="left">Product</th>
                     <th class="center">Price</th>
                     <th class="center">Min Qty</th>
+                    <th class="center">Market</th>
                     <th class="center">Status</th>
                     <th class="center">Actions</th>
                 </tr>
@@ -281,6 +280,7 @@
                     <td class="left">{{ price.product.name }}</td>
                     <td class="center">₹{{ price.price_per_unit }} / {{ price.unit }}</td>
                     <td class="center">{{ price.min_quantity }}</td>
+                    <td class="center">{{ price.market }}</td>
                     <td class="center">
                         {% if price.is_active %}
                         <span class="badge active-badge">Active</span>

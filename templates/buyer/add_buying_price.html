@@ -148,7 +148,7 @@
 
         <div class="nav-links">
             <a href="{% url 'buyer_dashboard' %}">Dashboard</a>
-            <a href="{% url 'buyer_dashboard' %}" class="active">Buying Prices</a>
+            <a href="{% url 'buyer_buying_prices' %}" class="active">Buying Prices</a>
             <a href="#">Shop Products</a>
             <a href="#">Sell Requests</a>
             <a href="{% url 'logout' %}">Logout</a>
@@ -162,6 +162,15 @@
 
             <form method="post">
                 {% csrf_token %}
+
+                <label>Market</label>
+                <select name="market" required>
+                    {% for market in markets %}
+                    <option value="{{ market.id }}">
+                        {{ market.name }} - {{ market.district }}
+                    </option>
+                    {% endfor %}
+                </select>
 
                 <label>Product</label>
                 <select name="product" required>

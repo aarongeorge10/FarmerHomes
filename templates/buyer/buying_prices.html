@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Buying Prices</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --green: #2E7D32;
+            --green-dark: #1B5E20;
+            --green-light: #E8F5E9;
+            --bg: #F5F7F6;
+            --dark: #1B1B1B;
+            --radius: 16px;
+            --shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+        }
+
+        /* ================= NAVBAR ================= */
+        .navbar {
+            height: 70px;
+            background: linear-gradient(90deg, var(--green-dark), var(--green));
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar .logo {
+            font-size: 20px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 22px;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+            padding: 8px 14px;
+            border-radius: 10px;
+            transition: 0.25s;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            background: rgba(255, 255, 255, 0.18);
+        }
+
+        /* ================= MAIN ================= */
+        .main {
+            padding: 40px;
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        /* ================= CARD ================= */
+        .card {
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 28px;
+        }
+
+        .card h3 {
+            margin: 0;
+            color: var(--green);
+            font-size: 20px;
+        }
+
+        .add-btn {
+            background: var(--green);
+            color: white;
+            text-decoration: none;
+            padding: 10px 18px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: 0.25s;
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
+        }
+
+        .add-btn:hover {
+            background: var(--green-dark);
+            transform: translateY(-2px);
+        }
+
+        /* ================= TABLE ================= */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 22px;
+        }
+
+        th,
+        td {
+            padding: 14px;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        th {
+            background: var(--green-light);
+            color: var(--green-dark);
+            font-weight: 600;
+        }
+
+        td:first-child,
+        th:first-child {
+            text-align: left;
+        }
+
+        tr:hover {
+            background: #f9fbf9;
+        }
+
+        /* ================= BADGES ================= */
+        .badge {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            display: inline-block;
+            min-width: 70px;
+            text-align: center;
+        }
+
+        .active-badge {
+            background: #C8E6C9;
+            color: #1B5E20;
+        }
+
+        .inactive-badge {
+            background: #FFCDD2;
+            color: #B71C1C;
+        }
+
+        /* ================= ACTION BUTTONS ================= */
+        .btn {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 8px;
+            font-size: 13px;
+            text-decoration: none;
+            margin: 0 3px;
+            transition: 0.2s;
+        }
+
+        .btn.edit {
+            background: #E3F2FD;
+            color: #1565C0;
+        }
+
+        .btn.disable {
+            background: #FFEBEE;
+            color: #C62828;
+        }
+
+        .btn.enable {
+            background: #E8F5E9;
+            color: #2E7D32;
+        }
+
+        .btn:hover {
+            transform: scale(1.08);
+        }
+
+        /* ================= RESPONSIVE ================= */
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 0 20px;
+            }
+
+            .nav-links {
+                gap: 10px;
+            }
+
+            .nav-links a {
+                font-size: 13px;
+                padding: 6px 10px;
+            }
+
+            .main {
+                padding: 25px 15px;
+            }
+
+            table {
+                font-size: 13px;
+            }
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <!-- TOP NAVBAR -->
+    <div class="navbar">
+        <div class="logo">🌾 Buyer Panel</div>
+
+        <div class="nav-links">
+            <a href="{% url 'buyer_dashboard' %}">Dashboard</a>
+            <a href="{% url 'buyer_buying_prices' %}" class="active">Buying Prices</a>
+            <a href="{% url 'buyer_shop_products' %}">Shop Products</a>
+            <a href="#">Sell Requests</a>
+            <a href="{% url 'logout' %}">Logout</a>
+        </div>
+    </div>
+
+    <div class="main">
+
+        <div class="card">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <h3>📉 Buying Prices</h3>
+
+                <a href="{% url 'add_buying_price' %}" class="add-btn">
+                    ➕ Add Buying Price
+                </a>
+            </div>
+
+            <table class="price-table">
+                <tr>
+                    <th>Product</th>
+                    <th>Price</th>
+                    <th>Min Qty</th>
+                    <th>Market</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+
+                {% for price in buy_prices %}
+                <tr>
+                    <td>{{ price.product.name }}</td>
+                    <td>₹{{ price.price_per_unit }} / {{ price.unit }}</td>
+                    <td>{{ price.min_quantity }}</td>
+                    <td>{{ price.market }}</td>
+                    <td>
+                        {% if price.is_active %}
+                        <span class="badge active-badge">Active</span>
+                        {% else %}
+                        <span class="badge inactive-badge">Inactive</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{% url 'edit_buying_price' price.id %}" class="btn edit">✏️</a>
+
+                        {% if price.is_active %}
+                        <a href="{% url 'toggle_buying_price' price.id %}" class="btn disable">⛔</a>
+                        {% else %}
+                        <a href="{% url 'toggle_buying_price' price.id %}" class="btn enable">▶️</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5">No buying prices added</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+
+    </div>
+
+</body>
+
+</html>

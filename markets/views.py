@@ -4,6 +4,8 @@ from .utils import haversine
 from farmersaccapp.decorators import admin_required, farmer_required
 from farmersaccapp.models import AllUser
 from products.models import MarketProduct
+from buyersapp.models import BuyerBuyPrice
+
 
 
 # =========================
@@ -100,20 +102,16 @@ def nearest_markets(request):
 
 def market_products(request, market_id):
     market = get_object_or_404(Market, id=market_id)
-    category = request.GET.get("category", "seed")
 
-    products = MarketProduct.objects.filter(
+    buyer_prices = BuyerBuyPrice.objects.filter(
         market=market,
-        product__category=category,   # change to product__category__key if FK
         is_active=True
-    )
+    ).select_related("product", "buyer")
 
     return render(request, "markets/market_products.html", {
         "market": market,
-        "products": products,
-        "active_category": category
+        "buyer_prices": buyer_prices
     })
-
 
 @farmer_required
 def seed_markets(request):
@@ -150,3 +148,4 @@ def seed_markets(request):
     return render(request, "markets/seed_markets.html", {
         "markets": market_list
     })
+21
