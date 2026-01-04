@@ -12,6 +12,7 @@ from products.models import Product
 from .decorators import farmer_required
 from django.views.decorators.http import require_POST
 from buyersapp.models import BuyerBuyPrice
+from trading.models import FarmerNotification
 
 def home(request):
     return render(request, "user/home.html")
@@ -230,10 +231,26 @@ def userlogout(request):
     logout(request)
     return redirect('home')
 
+
+@farmer_required
 def user_dashboard(request):
-    username = request.session.get("username")
+    user_id = request.session.get("user_id")
+    user = get_object_or_404(AllUser, id=user_id, role="farmer")
+    farmer = get_object_or_404(FarmerProfile, user=user)
+
+    notifications = FarmerNotification.objects.filter(
+        farmer=farmer
+    ).order_by("-created_at")
+
+    unread_count = FarmerNotification.objects.filter(
+        farmer=farmer,
+        is_read=False
+    ).count()
+
     return render(request, "user/user_dashboard.html", {
-        "username": username
+        "username": user.username,
+        "notifications": notifications,
+        "unread_count": unread_count
     })
 
 # FORGOT PASSWORD

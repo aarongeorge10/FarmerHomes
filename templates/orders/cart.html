@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>My Cart | Farmer Homes</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --green: #2E7D32;
+            --green-dark: #1B5E20;
+            --green-light: #E8F5E9;
+            --bg: #F5F7F6;
+            --radius: 14px;
+            --shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            padding-top: 90px;
+        }
+
+        /* ================= NAVBAR ================= */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            height: 70px;
+            background: white;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            z-index: 1000;
+        }
+
+        .brand {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--green);
+        }
+
+        .nav-links a {
+            margin-left: 20px;
+            text-decoration: none;
+            color: #444;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover {
+            color: var(--green);
+        }
+
+        /* ================= PAGE ================= */
+        .container {
+            max-width: 1100px;
+            margin: auto;
+            padding: 40px;
+        }
+
+        h2 {
+            color: var(--green);
+            margin-bottom: 25px;
+        }
+
+        .market-title {
+            margin-top: 35px;
+            margin-bottom: 10px;
+            color: var(--green-dark);
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        /* ================= TABLE ================= */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        th,
+        td {
+            padding: 14px;
+            text-align: center;
+        }
+
+        th {
+            background: var(--green-light);
+            color: var(--green-dark);
+            font-weight: 600;
+        }
+
+        tr:not(:last-child) td {
+            border-bottom: 1px solid #eee;
+        }
+
+        /* ================= PRODUCT CELL ================= */
+        .product-name {
+            font-weight: 600;
+        }
+
+        .shop-name {
+            font-size: 13px;
+            color: #666;
+            margin-top: 4px;
+        }
+
+        .market-name {
+            font-size: 12px;
+            color: #888;
+            margin-top: 2px;
+        }
+
+        /* ================= QTY ================= */
+        .qty-box {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .qty-btn {
+            padding: 4px 10px;
+            border-radius: 6px;
+            border: none;
+            background: var(--green);
+            color: white;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .qty-btn:hover {
+            background: var(--green-dark);
+        }
+
+        .remove-btn {
+            color: #d32f2f;
+            font-size: 14px;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .remove-btn:hover {
+            text-decoration: underline;
+        }
+
+        /* ================= FOOTER ================= */
+        .cart-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+            margin-bottom: 40px;
+        }
+
+        .total {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .checkout-btn {
+            padding: 10px 22px;
+            background: var(--green);
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 500;
+        }
+
+        .checkout-btn:hover {
+            background: var(--green-dark);
+        }
+
+        .empty {
+            margin-top: 40px;
+            text-align: center;
+            color: #666;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <div class="navbar">
+        <div class="brand">🌱 Farmer Homes</div>
+        <div class="nav-links">
+            <a href="{% url 'user_dashboard' %}">Dashboard</a>
+            <a href="{% url 'seed_markets' %}">Seed Markets</a>
+            <a href="{% url 'view_cart' %}">Cart</a>
+            <a href="{% url 'logout' %}">Logout</a>
+        </div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="container">
+        <h2>🛒 My Cart</h2>
+
+        {% if carts %}
+
+        {% for cart in carts %}
+        {% if cart.items.all %}
+
+        <!-- MARKET TITLE -->
+        <div class="market-title">
+            📍 {{ cart.market.name }}
+        </div>
+
+        <table>
+            <tr>
+                <th>Product</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Subtotal</th>
+                <th></th>
+            </tr>
+
+            {% for item in cart.items.all %}
+            <tr>
+                <td>
+                    <div class="product-name">
+                        {{ item.product.product.name }}
+                    </div>
+
+                    <div class="shop-name">
+                        🏪 {{ item.product.buyer.business_name|default:item.product.buyer.user.username }}
+                    </div>
+
+                </td>
+
+                <td>₹{{ item.product.price }}</td>
+
+                <td>
+                    <div class="qty-box">
+                        <a href="{% url 'decrease_qty' item.id %}" class="qty-btn">−</a>
+                        {{ item.quantity }}
+                        <a href="{% url 'increase_qty' item.id %}" class="qty-btn">+</a>
+                    </div>
+                </td>
+
+                <td>₹{{ item.subtotal }}</td>
+
+                <td>
+                    <a href="{% url 'remove_from_cart' item.id %}" class="remove-btn">
+                        Remove
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <div class="cart-footer">
+            <div class="total">
+                Total: ₹{{ cart.total_amount }}
+            </div>
+
+            <a href="{% url 'checkout' cart.id %}" class="checkout-btn">
+                Checkout {{ cart.market.name }} →
+            </a>
+        </div>
+
+        {% endif %}
+        {% endfor %}
+
+        {% else %}
+        <div class="empty">
+            <p>Your cart is empty.</p>
+        </div>
+        {% endif %}
+    </div>
+
+</body>
+
+</html>

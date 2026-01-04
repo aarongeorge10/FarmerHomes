@@ -243,7 +243,7 @@
         <a href="{% url 'buyer_dashboard' %}" class="active">📊 <span>Dashboard</span></a>
         <a href="{% url 'buyer_buying_prices' %}">📉 <span>Buying Prices</span></a>
         <a href="{% url 'buyer_shop_products' %}">🛒 <span>Shop Products</span></a>
-        <a href="#">📦 <span>Sell Requests</span></a>
+        <a href="{% url 'buyer_market_orders' %}">📦 <span>Farmer Orders Requests</span></a>
         <a href="{% url 'logout' %}">🚪 <span>Logout</span></a>
     </div>
 
@@ -263,13 +263,13 @@
             <div style="display:flex; justify-content:space-between; align-items:center;">
                 <h3>📉 Buying Prices (Farmers Sell Here)</h3>
 
-                
+
             </div>
             <table class="price-table">
                 <tr>
                     <th class="left">Product</th>
                     <th class="center">Price</th>
-                    <th class="center">Min Qty</th>
+                    <th class="center">Min Qty ( Kg )</th>
                     <th class="center">Market</th>
                     <th class="center">Status</th>
                     <th class="center">Actions</th>
@@ -305,50 +305,138 @@
         </div>
 
         <!-- SHOP PRODUCTS -->
+        <!-- SHOP PRODUCTS -->
         <div class="card">
             <h3>🛒 My Shop Products (Farmers Buy Here)</h3>
-            <table>
+
+            <table class="price-table">
                 <tr>
-                    <th>Product</th>
-                    <th>Price</th>
-                    <th>Stock</th>
+                    <th class="left">Product</th>
+                    <th class="center">Price</th>
+                    <th class="center">Stock</th>
+                    <th class="center">Market</th>
+                    <th class="center">Status</th>
+                    <th class="center">Actions</th>
                 </tr>
+
                 {% for item in shop_products %}
                 <tr>
-                    <td>{{ item.product.name }}</td>
-                    <td>₹{{ item.price }}</td>
-                    <td>{{ item.stock_quantity }}</td>
+                    <td class="left">{{ item.product.name }}</td>
+                    <td class="center">₹{{ item.price }} / {{ item.unit }}</td>
+                    <td class="center">{{ item.stock_quantity }}</td>
+                    <td class="center">{{ item.market.name }}</td>
+
+                    <td class="center">
+                        {% if item.stock_quantity <= 0 %} <span class="badge inactive-badge">Out of Stock</span>
+                            {% elif item.is_available %}
+                            <span class="badge active-badge">Available</span>
+                            {% else %}
+                            <span class="badge inactive-badge">Unavailable</span>
+                            {% endif %}
+                    </td>
+
+                    <td class="center actions">
+                        <a href="{% url 'buyer_edit_shop_product' item.id %}" class="btn edit">✏️</a>
+
+                        {% if item.is_available %}
+                        <a href="{% url 'buyer_toggle_shop_product' item.id %}" class="btn disable">⛔</a>
+                        {% else %}
+                        <a href="{% url 'buyer_toggle_shop_product' item.id %}" class="btn enable">▶️</a>
+                        {% endif %}
+                    </td>
                 </tr>
+
                 {% empty %}
                 <tr>
-                    <td colspan="3">No shop products added</td>
+                    <td colspan="6">No shop products added</td>
                 </tr>
                 {% endfor %}
             </table>
+
         </div>
 
-        <!-- SELL REQUESTS -->
-        <div class="card">
-            <h3>📦 Pending Sell Requests</h3>
-            <table>
-                <tr>
-                    <th>Farmer</th>
-                    <th>Product</th>
-                    <th>Quantity</th>
-                </tr>
-                {% for req in sell_requests %}
-                <tr>
-                    <td>{{ req.farmer.user.username }}</td>
-                    <td>{{ req.buyer_price.product.name }}</td>
-                    <td>{{ req.quantity }}</td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="3">No pending requests</td>
-                </tr>
-                {% endfor %}
-            </table>
+
+        <!-- FARMER ORDERS -->
+<div class="card">
+
+    <h3>📦 Farmer Orders Requests</h3>
+
+    <!-- ================= PENDING ================= -->
+    <div style="margin-top:20px;">
+        <h4 style="color:#c62828; margin-bottom:10px;">
+            🔴 Pending Approval
+        </h4>
+
+        {% if pending_orders %}
+        <table class="price-table">
+            <tr>
+                <th class="left">Farmer</th>
+                <th class="left">Market</th>
+                <th class="center">Items</th>
+                <th class="center">Actions</th>
+            </tr>
+
+            {% for order in pending_orders %}
+            <tr>
+                <td class="left">{{ order.farmer.user.username }}</td>
+                <td class="left">{{ order.market.name }}</td>
+                <td class="center">{{ order.items.count }}</td>
+                <td class="center actions">
+                    <a href="{% url 'approve_market_order' order.id %}" class="btn enable">
+                        Approve
+                    </a>
+                    <a href="{% url 'reject_market_order' order.id %}" class="btn disable">
+                        Reject
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% else %}
+        <div style="padding:12px 0; color:#555;">
+            No pending farmer orders.
         </div>
+        {% endif %}
+    </div>
+
+    <!-- ================= APPROVED ================= -->
+    <div style="margin-top:10px;">
+        <h4 style="color:#2E7D32; margin-bottom:10px;">
+            🟢 Last 3 Approved Orders
+        </h4>
+
+        {% if approved_orders %}
+        <table class="price-table">
+            <tr>
+                <th class="left">Farmer</th>
+                <th class="left">Market</th>
+                <th class="center">Date</th>
+                <th class="center">QR</th>
+            </tr>
+
+            {% for order in approved_orders %}
+            <tr>
+                <td class="left">{{ order.farmer.user.username }}</td>
+                <td class="left">{{ order.market.name }}</td>
+                <td class="center">
+                    {{ order.created_at|date:"d M Y" }}
+                </td>
+                <td class="center">
+                    <a href="{% url 'market_order_qr' order.id %}" class="btn edit">
+                        View QR
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% else %}
+        <div style="padding:12px 0; color:#555;">
+            No approved orders yet.
+        </div>
+        {% endif %}
+    </div>
+
+</div>
 
     </div>
 

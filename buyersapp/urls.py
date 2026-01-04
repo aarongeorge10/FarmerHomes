@@ -12,4 +12,7 @@ urlpatterns = [
     path("buying-price/toggle/<int:price_id>/", views.toggle_buying_price, name="toggle_buying_price"),
 
     path("shop-products/", views.buyer_shop_products, name="buyer_shop_products"),
+    path("buyer/shop-products/add/",views.add_shop_product,name="buyer_add_shop_product"),
+    path("buyer/shop-products/edit/<int:product_id>/",views.edit_shop_product,name="buyer_edit_shop_product"),
+    path("buyer/shop-products/toggle/<int:product_id>/",views.toggle_shop_product,name="buyer_toggle_shop_product"),
 ]

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Shop Product</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --green: #2E7D32;
+            --green-dark: #1B5E20;
+            --green-light: #E8F5E9;
+            --bg: #F4F7F5;
+            --radius: 18px;
+            --shadow: 0 14px 35px rgba(0, 0, 0, 0.12);
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            padding-top: 80px;
+        }
+
+        /* ================= NAVBAR ================= */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            height: 70px;
+            background: linear-gradient(90deg, var(--green-dark), var(--green));
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            color: white;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+            z-index: 1000;
+        }
+
+        .navbar h1 {
+            font-size: 20px;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 18px;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+            padding: 8px 16px;
+            border-radius: 10px;
+            transition: 0.25s;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* ================= FORM ================= */
+        .container {
+            max-width: 600px;
+            margin: auto;
+            padding: 30px;
+        }
+
+        .card {
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 35px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-top: 0;
+            color: var(--green-dark);
+            margin-bottom: 30px;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 6px;
+        }
+
+        select,
+        input {
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: 10px;
+            border: 1px solid #ddd;
+            margin-bottom: 18px;
+            font-size: 14px;
+        }
+
+        select:focus,
+        input:focus {
+            outline: none;
+            border-color: var(--green);
+            box-shadow: 0 0 0 2px rgba(46, 125, 50, 0.15);
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: linear-gradient(135deg, var(--green), var(--green-dark));
+            color: white;
+            padding: 14px;
+            border-radius: 14px;
+            border: none;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.25s;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 22px rgba(46, 125, 50, 0.45);
+        }
+
+        /* ================= RESPONSIVE ================= */
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 0 20px;
+            }
+
+            .container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <div class="navbar">
+        <h1>🛒 Buyer | Edit Shop Product</h1>
+        <div class="nav-links">
+            <a href="{% url 'buyer_dashboard' %}">Dashboard</a>
+            <a href="{% url 'buyer_shop_products' %}" class="active">Shop Products</a>
+            <a href="{% url 'buyer_buying_prices' %}">Buying Prices</a>
+            <a href="{% url 'logout' %}">Logout</a>
+        </div>
+    </div>
+
+    <!-- FORM CARD -->
+    <div class="container">
+        <div class="card">
+            <h2>Edit Product Details</h2>
+
+            <form method="post">
+                {% csrf_token %}
+
+                <label>Market</label>
+                <select name="market" required>
+                    {% for market in markets %}
+                    <option value="{{ market.id }}" {% if shop_product.market.id == market.id %}selected{% endif %}>
+                        {{ market.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+
+                <label>Product</label>
+                <select name="product" required>
+                    {% for product in products %}
+                    <option value="{{ product.id }}" {% if shop_product.product.id == product.id %}selected{% endif %}>
+                        {{ product.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+
+
+                <label>Price</label>
+                <input type="number" step="0.01" name="price" value="{{ shop_product.price }}" required>
+
+                <label>Stock Quantity</label>
+                <input type="number" name="stock_quantity" value="{{ shop_product.stock_quantity }}" required>
+
+                <label>Unit</label>
+                <input type="text" name="unit" value="{{ shop_product.unit }}" required>
+
+                <button type="submit" class="submit-btn">
+                    💾 Update Product
+                </button>
+            </form>
+        </div>
+    </div>
+
+</body>
+
+</html>

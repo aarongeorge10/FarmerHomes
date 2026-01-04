@@ -1,27 +1,132 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
+    <meta charset="UTF-8">
     <title>Seed Markets</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 
     <style>
-        body {
+        :root {
+            --green: #2E7D32;
+            --green-dark: #1B5E20;
+            --green-light: #E8F5E9;
+            --bg: #F5F7F6;
+            --radius: 16px;
+            --shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+        }
+
+        * {
+            box-sizing: border-box;
             font-family: "Poppins", sans-serif;
-            background: #f5f7f6;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            padding-top: 90px;
+        }
+
+        /* ================= NAVBAR ================= */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            height: 70px;
+            background: white;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            z-index: 1000;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo {
+            font-size: 26px;
+        }
+
+        .brand {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--green);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #444;
+            font-weight: 500;
+            position: relative;
+            padding-bottom: 4px;
+        }
+
+        .nav-links a:hover {
+            color: var(--green);
+        }
+
+        .nav-links a::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 0%;
+            height: 2px;
+            background: var(--green);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after,
+        .nav-links a.active::after {
+            width: 100%;
+        }
+
+        .nav-links a.active {
+            color: var(--green);
+            font-weight: 600;
+        }
+
+        /* ================= PAGE ================= */
+        .container {
+            max-width: 1100px;
+            margin: auto;
             padding: 40px;
         }
 
         h2 {
-            color: #2E7D32;
+            color: var(--green);
             margin-bottom: 30px;
         }
 
         .market-card {
             background: white;
-            padding: 20px;
-            border-radius: 14px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            padding: 22px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
             margin-bottom: 20px;
+            transition: transform 0.25s ease;
+        }
+
+        .market-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .market-card h3 {
+            margin-top: 0;
+            color: var(--green-dark);
         }
 
         .distance {
@@ -31,33 +136,60 @@
 
         .btn {
             display: inline-block;
-            margin-top: 10px;
-            padding: 8px 16px;
-            background: #2E7D32;
+            margin-top: 12px;
+            padding: 10px 18px;
+            background: var(--green);
             color: white;
             text-decoration: none;
-            border-radius: 8px;
+            border-radius: 10px;
+            font-size: 14px;
+            transition: background 0.2s ease;
+        }
+
+        .btn:hover {
+            background: var(--green-dark);
         }
     </style>
 </head>
 
 <body>
 
-    <h2>🌱 Seed Markets Near You</h2>
+    <!-- ================= NAVBAR ================= -->
+    <div class="navbar">
+        <div class="nav-left">
+            <span class="logo">🌱</span>
+            <span class="brand">Farmer Homes</span>
+        </div>
 
-    {% for item in markets %}
-    <div class="market-card">
-        <h3>{{ item.market.name }}</h3>
-        <p>{{ item.market.village }}, {{ item.market.district }}</p>
-        <p class="distance">📍 {{ item.distance }} km away</p>
-
-        <a href="{% url 'market_products' item.market.id %}?category=seed">
-            View Seed Products →
-        </a>
+        <div class="nav-links">
+            <a href="{% url 'user_dashboard' %}">Dashboard</a>
+            <a href="{% url 'seed_markets' %}" class="active">Seed Markets</a>
+            <a href="{% url 'nearest_markets' %}">Sell Crops</a>
+            <a href="{% url 'farmer_profile' %}">Profile</a>
+            <a href="{% url 'logout' %}">Logout</a>
+        </div>
     </div>
-    {% empty %}
-    <p>No seed markets found nearby.</p>
-    {% endfor %}
+
+    <!-- ================= CONTENT ================= -->
+    <div class="container">
+
+        <h2>🌱 Seed Markets Near You</h2>
+
+        {% for item in markets %}
+        <div class="market-card">
+            <h3>{{ item.market.name }}</h3>
+            <p>{{ item.market.village }}, {{ item.market.district }}</p>
+            <p class="distance">📍 {{ item.distance }} km away</p>
+
+            <a class="btn" href="{% url 'market_products' item.market.id %}?category=seed">
+                View Seed Products →
+            </a>
+        </div>
+        {% empty %}
+        <p>No seed markets found nearby.</p>
+        {% endfor %}
+
+    </div>
 
 </body>
 

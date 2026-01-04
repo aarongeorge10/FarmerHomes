@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Market Cart | Farmer Homes</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --green: #2E7D32;
+            --green-dark: #1B5E20;
+            --green-light: #E8F5E9;
+            --bg: #F5F7F6;
+            --radius: 16px;
+            --shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: #1B1B1B;
+        }
+
+        /* ================= NAVBAR ================= */
+        .navbar {
+            background: white;
+            padding: 16px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo {
+            font-size: 26px;
+        }
+
+        .brand {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--green);
+        }
+
+        .back-btn {
+            padding: 8px 14px;
+            background: var(--green-light);
+            color: var(--green-dark);
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .back-btn:hover {
+            background: #dff0e3;
+        }
+
+        /* ================= CONTENT ================= */
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        h2 {
+            color: var(--green);
+            margin-bottom: 10px;
+        }
+
+        .subtext {
+            color: #555;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+
+        /* ================= CART ITEM ================= */
+        .cart-item {
+            background: white;
+            padding: 22px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 18px;
+        }
+
+        .cart-item h3 {
+            margin: 0 0 6px;
+            color: var(--green-dark);
+        }
+
+        .cart-item p {
+            margin: 4px 0;
+            font-size: 14px;
+            color: #444;
+        }
+
+        /* ================= ACTIONS ================= */
+        .item-actions {
+            margin-top: 14px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .qty-input {
+            padding: 8px 10px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            width: 120px;
+        }
+
+        .btn {
+            padding: 8px 14px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .update-btn {
+            background: #1565c0;
+            color: white;
+        }
+
+        .remove-btn {
+            background: #c62828;
+            color: white;
+        }
+
+        /* ================= SUBMIT ================= */
+        .submit-btn {
+            margin-top: 30px;
+            padding: 14px 26px;
+            background: var(--green);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .submit-btn:hover {
+            background: var(--green-dark);
+        }
+
+        .empty {
+            background: white;
+            padding: 30px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            text-align: center;
+            color: #777;
+        }
+
+        @media (max-width: 600px) {
+            .navbar {
+                padding: 16px 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <div class="navbar">
+        <!-- LEFT -->
+        <div class="nav-left">
+            <span class="logo">🌾</span>
+            <span class="brand">Farmer Homes</span>
+        </div>
+
+        <!-- RIGHT -->
+        <div class="nav-right">
+            <a href="{% url 'my_market_carts' %}" class="back-btn">
+                ← Back to Carts
+            </a>
+            <a href="{% url 'nearest_markets' %}" class="back-btn">
+                ← Back to Markets
+            </a>
+        </div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="container">
+        <h2>🛒 Market Cart – {{ cart.market.name }}</h2>
+        <div class="subtext">
+            Buyer: <strong>{{ cart.buyer.business_name }}</strong>
+        </div>
+
+        {% for item in cart.items.all %}
+        <div class="cart-item">
+            <h3>{{ item.buyer_price.product.name }}</h3>
+
+            <p><strong>Price:</strong> ₹{{ item.buyer_price.price_per_unit }} / {{ item.buyer_price.unit }}</p>
+            <p><strong>Quantity:</strong> {{ item.quantity }} {{ item.buyer_price.unit }}</p>
+
+            <div class="item-actions">
+                <!-- UPDATE QUANTITY -->
+                <form method="post" action="{% url 'update_cart_item' item.id %}">
+                    {% csrf_token %}
+                    <input type="number" name="quantity" min="1" value="{{ item.quantity }}" class="qty-input" required>
+                    <button class="btn update-btn">Update</button>
+                </form>
+
+                <!-- REMOVE ITEM -->
+                <form method="post" action="{% url 'remove_cart_item' item.id %}">
+                    {% csrf_token %}
+                    <button class="btn remove-btn">Remove</button>
+                </form>
+            </div>
+        </div>
+        {% empty %}
+        <div class="empty">
+            No items in this cart.
+        </div>
+        {% endfor %}
+
+        {% if cart.items.exists %}
+        <form method="post" action="{% url 'submit_market_cart' cart.id %}">
+            {% csrf_token %}
+            <button class="submit-btn">
+                Submit Cart to Buyer →
+            </button>
+        </form>
+        {% endif %}
+    </div>
+
+</body>
+
+</html>

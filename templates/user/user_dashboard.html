@@ -195,7 +195,7 @@
             <div class="card">
                 <h3>📦 Order History</h3>
                 <p>View your past purchases, sales, and transaction details.</p>
-                <a href="#">View Orders →</a>
+                <a href="{% url 'farmer_orders' %}">View Orders →</a>
             </div>
 
             <div class="card">
@@ -210,6 +210,28 @@
                 <a href="{% url 'farmer_profile' %}">Update Profile →</a>
             </div>
 
+            <div class="card">
+                <h3>🔔 Notifications</h3>
+
+                {% if notifications %}
+                <ul style="list-style:none; padding-left:0;">
+                    {% for note in notifications %}
+                    <li style="margin-bottom:10px;">
+                        {{ note.message }}<br>
+                        <small style="color:#777;">
+                            {{ note.created_at|date:"d M Y, h:i A" }}
+                        </small>
+                    </li>
+                    {% endfor %}
+                </ul>
+
+                {% if unread_count > 0 %}
+                <p><strong>{{ unread_count }}</strong> unread notification(s)</p>
+                {% endif %}
+                {% else %}
+                <p>No notifications</p>
+                {% endif %}
+            </div>
         </div>
     </div>
 

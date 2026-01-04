@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buying Prices | {{ market.name }}</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --green: #2E7D32;
+            --green-dark: #1B5E20;
+            --green-light: #E8F5E9;
+            --bg: #F5F7F6;
+            --radius: 16px;
+            --shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: #1B1B1B;
+        }
+
+        /* ================= NAVBAR ================= */
+        .navbar {
+            background: white;
+            padding: 16px 40px;
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-section {
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-left {
+            justify-content: flex-start;
+            gap: 10px;
+        }
+
+        .nav-center {
+            justify-content: center;
+        }
+
+        .nav-right {
+            justify-content: flex-end;
+        }
+
+        .nav-right {
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+
+        .logo {
+            font-size: 26px;
+        }
+
+        .brand {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--green);
+        }
+
+        .back-btn {
+            text-decoration: none;
+            padding: 8px 14px;
+            border-radius: 8px;
+            background: var(--green-light);
+            color: var(--green-dark);
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .back-btn:hover {
+            background: #dff0e3;
+        }
+
+        .cart-icon {
+            position: relative;
+            text-decoration: none;
+            color: var(--green-dark);
+            font-weight: 500;
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -12px;
+            background: #c62828;
+            color: white;
+            font-size: 12px;
+            padding: 2px 6px;
+            border-radius: 50%;
+        }
+
+        /* ================= CONTENT ================= */
+        .container {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        h2 {
+            color: var(--green);
+            margin-bottom: 30px;
+        }
+
+        /* ================= PRODUCT CARD ================= */
+        .market-card {
+            background: white;
+            padding: 25px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 22px;
+        }
+
+        .market-card h3 {
+            margin-top: 0;
+            color: var(--green-dark);
+        }
+
+        .market-card p {
+            margin: 6px 0;
+            font-size: 14px;
+            color: #444;
+        }
+
+        /* ================= FORM ================= */
+        .sell-form {
+            margin-top: 14px;
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .sell-form input {
+            padding: 10px 14px;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+            width: 160px;
+        }
+
+        .sell-btn {
+            padding: 10px 18px;
+            background: var(--green);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .sell-btn:hover {
+            background: var(--green-dark);
+        }
+
+        .empty {
+            background: white;
+            padding: 25px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            text-align: center;
+            color: #777;
+        }
+
+        /* ================= MOBILE ================= */
+        @media (max-width: 640px) {
+            .navbar {
+                grid-template-columns: auto 1fr auto;
+                padding: 12px 16px;
+            }
+
+            .brand {
+                font-size: 16px;
+            }
+
+            .back-btn {
+                font-size: 13px;
+                padding: 6px 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <div class="navbar">
+        <!-- LEFT -->
+        <div class="nav-section nav-left">
+            <span class="logo">🌾</span>
+            <span class="brand">Farmer Homes</span>
+        </div>
+
+        <!-- EMPTY CENTER (keeps spacing) -->
+        <div></div>
+
+        <!-- RIGHT -->
+        <div class="nav-section nav-right">
+            <a href="{% url 'nearest_markets' %}" class="back-btn">
+                ← Back to Markets
+            </a>
+
+            <a href="{% url 'my_market_carts' %}" class="cart-icon" style="margin-left:16px;">
+                🛒 Cart
+                {% if cart_count > 0 %}
+                <span class="cart-count">{{ cart_count }}</span>
+                {% endif %}
+            </a>
+        </div>
+    </div>
+
+
+    <!-- CONTENT -->
+    <div class="container">
+        <h2>📦 Buying Prices – {{ market.name }}</h2>
+
+        {% for price in buying_prices %}
+        <div class="market-card">
+            <h3>{{ price.product.name }}</h3>
+
+            <p><strong>Buyer:</strong> {{ price.buyer.business_name }}</p>
+            <p><strong>Price:</strong> ₹{{ price.price_per_unit }} / {{ price.unit }}</p>
+            <p><strong>Minimum Quantity:</strong> {{ price.min_quantity }} {{ price.unit }}</p>
+
+            <form method="post" action="{% url 'add_to_market_cart' price.id %}" class="sell-form">
+                {% csrf_token %}
+                <input type="number" name="quantity" min="{{ price.min_quantity }}" placeholder="Enter quantity"
+                    required>
+
+                <button class="sell-btn">
+                    Add to Cart +
+                </button>
+            </form>
+        </div>
+        {% empty %}
+        <div class="empty">
+            No buyers available for this market.
+        </div>
+        {% endfor %}
+    </div>
+
+</body>
+
+</html>

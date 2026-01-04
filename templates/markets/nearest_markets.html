@@ -1,90 +1,205 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-    <title>Nearby Markets</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nearby Markets | Farmer Homes</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 
     <style>
-        body {
+        :root {
+            --green: #2E7D32;
+            --green-dark: #1B5E20;
+            --green-light: #E8F5E9;
+            --bg: #F5F7F6;
+            --radius: 16px;
+            --shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
             font-family: "Poppins", sans-serif;
-            background: #f5f7f6;
-            padding: 40px;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: #1B1B1B;
+        }
+
+        /* ================= NAVBAR ================= */
+        .navbar {
+            background: white;
+            padding: 16px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo {
+            font-size: 26px;
+        }
+
+        .brand {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--green);
+        }
+
+        .back-btn {
+            text-decoration: none;
+            padding: 8px 14px;
+            border-radius: 8px;
+            background: var(--green-light);
+            color: var(--green-dark);
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .back-btn:hover {
+            background: #dff0e3;
+        }
+
+        /* ================= CONTENT ================= */
+        .container {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 0 20px;
         }
 
         h2 {
-            color: #2E7D32;
-            margin-bottom: 25px;
+            color: var(--green);
+            margin-bottom: 30px;
         }
 
+        /* ================= MARKET CARD ================= */
         .market-card {
             background: white;
-            padding: 20px;
-            border-radius: 14px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            padding: 25px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
             margin-bottom: 20px;
+            transition: transform 0.2s ease;
+        }
+
+        .market-card:hover {
+            transform: translateY(-4px);
         }
 
         .market-card h3 {
             margin: 0;
-            color: #2E7D32;
+            color: var(--green-dark);
+        }
+
+        .market-card p {
+            margin: 6px 0;
+            font-size: 14px;
+            color: #444;
         }
 
         .distance {
             font-size: 14px;
             color: #555;
-            margin: 6px 0;
+            margin-top: 8px;
         }
 
         .sell-btn {
             display: inline-block;
-            margin-top: 10px;
-            padding: 8px 16px;
-            background: #2E7D32;
+            margin-top: 14px;
+            padding: 10px 18px;
+            background: var(--green);
             color: white;
             text-decoration: none;
-            border-radius: 8px;
+            border-radius: 10px;
             font-size: 14px;
+            transition: background 0.2s ease;
         }
 
         .sell-btn:hover {
-            background: #1B5E20;
+            background: var(--green-dark);
         }
 
         .warning {
             background: #fff3cd;
-            padding: 15px;
-            border-radius: 10px;
+            padding: 18px;
+            border-radius: 12px;
             color: #856404;
+            margin-bottom: 30px;
+        }
+
+        .empty {
+            background: white;
+            padding: 25px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            text-align: center;
+            color: #777;
+        }
+
+        @media (max-width: 600px) {
+            .navbar {
+                padding: 16px 20px;
+            }
         }
     </style>
 </head>
 
 <body>
 
-    <h2>📍 Nearby Markets</h2>
+    <!-- NAVBAR -->
+    <div class="navbar">
+        <div class="nav-left">
+            <span class="logo">🌾</span>
+            <span class="brand">Farmer Homes</span>
+        </div>
 
-    {% if not has_location %}
-    <div class="warning">
-        Please update your latitude and longitude in your profile to see nearby markets.
-    </div>
-    {% endif %}
-
-    {% for item in markets %}
-    <div class="market-card">
-        <h3>{{ item.market.name }}</h3>
-        <p>{{ item.market.village }}, {{ item.market.district }}</p>
-
-        <p class="distance">
-            Distance: {{ item.distance }} km
-        </p>
-
-        <a href="{% url 'market_products' item.market.id %}" class="sell-btn">
-            Sell Crops →
+        <a href="{% url 'user_dashboard' %}" class="back-btn">
+            ← Back to Dashboard
         </a>
     </div>
-    {% empty %}
-    <p>No nearby markets found.</p>
-    {% endfor %}
+
+    <!-- CONTENT -->
+    <div class="container">
+        <h2>📍 Nearby Markets</h2>
+
+        {% if not has_location %}
+        <div class="warning">
+            Please update your latitude and longitude in your profile to see nearby markets.
+        </div>
+        {% endif %}
+
+        {% for item in markets %}
+        <div class="market-card">
+            <h3>{{ item.market.name }}</h3>
+            <p>{{ item.market.village }}, {{ item.market.district }}</p>
+
+            <p class="distance">
+                Distance: {{ item.distance }} km
+            </p>
+
+            <a href="{% url 'market_buying_prices' item.market.id %}" class="sell-btn">
+                Sell Crops →
+            </a>
+        </div>
+        {% empty %}
+        <div class="empty">
+            No nearby markets found.
+        </div>
+        {% endfor %}
+    </div>
 
 </body>
 

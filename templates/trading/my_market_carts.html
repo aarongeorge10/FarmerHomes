@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>My Market Carts | Farmer Homes</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --green: #2E7D32;
+            --green-dark: #1B5E20;
+            --green-light: #E8F5E9;
+            --bg: #F5F7F6;
+            --radius: 16px;
+            --shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: #1B1B1B;
+        }
+
+        /* ================= NAVBAR ================= */
+        .navbar {
+            background: white;
+            padding: 16px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo {
+            font-size: 26px;
+        }
+
+        .brand {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--green);
+        }
+
+        .back-btn {
+            padding: 8px 14px;
+            background: var(--green-light);
+            color: var(--green-dark);
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .back-btn:hover {
+            background: #dff0e3;
+        }
+
+        /* ================= CONTENT ================= */
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        h2 {
+            color: var(--green);
+            margin-bottom: 25px;
+        }
+
+        /* ================= CART CARD ================= */
+        .cart-card {
+            background: white;
+            padding: 22px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+            transition: transform 0.2s ease;
+        }
+
+        .cart-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .cart-card h3 {
+            margin-top: 0;
+            color: var(--green-dark);
+        }
+
+        .cart-card p {
+            margin: 6px 0;
+            font-size: 14px;
+            color: #444;
+        }
+
+        .view-btn {
+            display: inline-block;
+            margin-top: 12px;
+            padding: 10px 18px;
+            background: var(--green);
+            color: white;
+            border-radius: 10px;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .view-btn:hover {
+            background: var(--green-dark);
+        }
+
+        .empty {
+            background: white;
+            padding: 30px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            text-align: center;
+            color: #777;
+        }
+
+        @media (max-width: 600px) {
+            .navbar {
+                padding: 16px 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<div class="navbar">
+    <div class="nav-left">
+        <span class="logo">🌾</span>
+        <span class="brand">Farmer Homes</span>
+    </div>
+
+    <a href="{% url 'nearest_markets' %}" class="back-btn">
+        ← Back to Markets
+    </a>
+    
+</div>
+
+<!-- CONTENT -->
+<div class="container">
+    <h2>🛒 My Market Carts</h2>
+
+    {% for cart in carts %}
+    <div class="cart-card">
+        <h3>{{ cart.market.name }}</h3>
+
+        <p><strong>Buyer:</strong> {{ cart.buyer.business_name }}</p>
+        <p><strong>Items:</strong> {{ cart.items.count }}</p>
+
+        <a href="{% url 'view_market_cart' cart.id %}" class="view-btn">
+            View Cart →
+        </a>
+    </div>
+    {% empty %}
+    <div class="empty">
+        You don’t have any active market carts.
+    </div>
+    {% endfor %}
+</div>
+
+</body>
+</html>

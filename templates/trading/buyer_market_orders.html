@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Buyer Orders | Farmer Homes</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --green: #2E7D32;
+            --green-dark: #1B5E20;
+            --green-light: #E8F5E9;
+            --bg: #F5F7F6;
+            --danger: #C62828;
+            --info: #1565C0;
+            --warning: #856404;
+            --radius: 16px;
+            --shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: #1B1B1B;
+        }
+
+        /* ================= NAVBAR ================= */
+        .navbar {
+            background: white;
+            padding: 16px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .brand {
+            color: var(--green);
+            font-weight: 600;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            padding: 8px 14px;
+            border-radius: 8px;
+            background: var(--green-light);
+            color: var(--green-dark);
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .nav-link:hover {
+            background: #dff0e3;
+        }
+
+        /* ================= CONTENT ================= */
+        .container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        h2 {
+            color: var(--green);
+            margin-bottom: 30px;
+        }
+
+        /* ================= ORDER CARD ================= */
+        .order-card {
+            background: white;
+            padding: 24px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 22px;
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 15px;
+            margin-bottom: 12px;
+        }
+
+        .order-meta {
+            font-size: 14px;
+            color: #444;
+            line-height: 1.6;
+        }
+
+        /* ================= STATUS ================= */
+        .status {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            text-transform: capitalize;
+            white-space: nowrap;
+        }
+
+        .status.pending {
+            background: #fff3cd;
+            color: var(--warning);
+        }
+
+        .status.approved {
+            background: var(--green-light);
+            color: var(--green-dark);
+        }
+
+        .status.rejected {
+            background: #fdecea;
+            color: var(--danger);
+        }
+
+        /* ================= ITEMS ================= */
+        .items {
+            margin: 14px 0 0;
+            padding-left: 18px;
+        }
+
+        .items li {
+            font-size: 14px;
+            margin-bottom: 6px;
+            color: #333;
+        }
+
+        /* ================= ACTIONS ================= */
+        .actions {
+            margin-top: 18px;
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            color: white;
+            transition: transform 0.2s ease, opacity 0.2s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            opacity: 0.95;
+        }
+
+        .btn.approve {
+            background: var(--green);
+        }
+
+        .btn.reject {
+            background: var(--danger);
+        }
+
+        .btn.qr {
+            background: var(--info);
+        }
+
+        .empty {
+            background: white;
+            padding: 30px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            text-align: center;
+            color: #777;
+        }
+
+        /* ================= MOBILE ================= */
+        @media (max-width: 640px) {
+            .navbar {
+                padding: 14px 20px;
+            }
+
+            .order-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <div class="navbar">
+        <div class="brand">🌾 Farmer Homes</div>
+        <a href="{% url 'buyer_dashboard' %}" class="nav-link">
+            ← Back to Dashboard
+        </a>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="container">
+        <h2>📦 Farmer Orders</h2>
+
+        {% for order in orders %}
+        <div class="order-card">
+
+            <div class="order-header">
+                <div class="order-meta">
+                    <strong>Farmer:</strong> {{ order.farmer.user.username }}<br>
+                    <strong>Market:</strong> {{ order.market.name }}
+                </div>
+
+                <div class="status {{ order.status }}">
+                    {{ order.status }}
+                </div>
+            </div>
+
+            <ul class="items">
+                {% for item in order.items.all %}
+                <li>
+                    {{ item.product.name }} —
+                    {{ item.quantity }} {{ item.unit }}
+                    @ ₹{{ item.price_per_unit }}
+                </li>
+                {% endfor %}
+            </ul>
+
+            <div class="actions">
+                {% if order.status == "pending" %}
+                <a href="{% url 'approve_market_order' order.id %}" class="btn approve">
+                    ✔ Approve
+                </a>
+                <a href="{% url 'reject_market_order' order.id %}" class="btn reject">
+                    ✖ Reject
+                </a>
+                {% endif %}
+
+                {% if order.status == "approved" %}
+                <a href="{% url 'market_order_qr' order.id %}" class="btn qr">
+                    📱 View QR
+                </a>
+                {% endif %}
+            </div>
+
+        </div>
+        {% empty %}
+        <div class="empty">
+            No orders yet.
+        </div>
+        {% endfor %}
+    </div>
+
+</body>
+
+</html>

@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Invoice | Farmer Homes</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --green: #2E7D32;
+            --green-dark: #1B5E20;
+            --green-light: #E8F5E9;
+            --bg: #F5F7F6;
+            --radius: 14px;
+            --shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            padding-top: 90px;
+        }
+
+        /* ================= NAVBAR ================= */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            height: 70px;
+            background: white;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            z-index: 1000;
+        }
+
+        .brand {
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--green);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-links a {
+            margin-left: 20px;
+            text-decoration: none;
+            color: #444;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover {
+            color: var(--green);
+        }
+
+        /* ================= PAGE ================= */
+        .container {
+            max-width: 800px;
+            margin: auto;
+            padding: 40px;
+        }
+
+        h2 {
+            color: var(--green-dark);
+            margin-bottom: 20px;
+        }
+
+        /* ================= INVOICE CARD ================= */
+        .invoice-card {
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 35px;
+        }
+
+        .invoice-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .invoice-header h3 {
+            margin: 0;
+            color: var(--green);
+        }
+
+        .invoice-meta p {
+            margin: 4px 0;
+            font-size: 14px;
+            color: #555;
+        }
+
+        hr {
+            border: none;
+            border-top: 1px solid #eee;
+            margin: 25px 0;
+        }
+
+        /* ================= TABLE ================= */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background: var(--green-light);
+            color: var(--green-dark);
+            font-weight: 600;
+        }
+
+        tr:not(:last-child) td {
+            border-bottom: 1px solid #eee;
+        }
+
+        .total {
+            text-align: right;
+            font-size: 18px;
+            font-weight: 600;
+            margin-top: 20px;
+            color: var(--green-dark);
+        }
+
+        /* ================= ACTIONS ================= */
+        .actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 30px;
+        }
+
+        .download-btn {
+            padding: 10px 20px;
+            background: var(--green);
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 500;
+        }
+
+        .download-btn:hover {
+            background: var(--green-dark);
+        }
+
+        .status {
+            font-size: 14px;
+            color: #4caf50;
+            font-weight: 500;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ================= NAVBAR ================= -->
+    <div class="navbar">
+        <div class="brand">🌱 Farmer Homes</div>
+        <div class="nav-links">
+            <a href="{% url 'user_dashboard' %}">Dashboard</a>
+            <a href="{% url 'farmer_orders' %}">My Orders</a>
+            <a href="{% url 'logout' %}">Logout</a>
+        </div>
+    </div>
+
+    <!-- ================= CONTENT ================= -->
+    <div class="container">
+        <h2>🧾 Invoice</h2>
+
+        <div class="invoice-card">
+
+            <div class="invoice-header">
+                <h3>Invoice #{{ invoice.invoice_number }}</h3>
+                <span class="status">✔ Paid</span>
+            </div>
+
+            <div class="invoice-meta">
+                <p><strong>Market:</strong> {{ order.market.name }}</p>
+                <p><strong>Total Paid:</strong> ₹{{ invoice.total_amount }}</p>
+            </div>
+
+            <hr>
+
+            <table>
+                <tr>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                </tr>
+
+                {% for item in order.items.all %}
+                <tr>
+                    <td>{{ item.product.product.name }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>₹{{ item.price }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+
+            <div class="total">
+                Total: ₹{{ invoice.total_amount }}
+            </div>
+
+            <div class="actions">
+                <a href="{% url 'invoice_pdf' invoice.id %}" class="download-btn">
+                    Download Invoice (PDF)
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+</body>
+
+</html>

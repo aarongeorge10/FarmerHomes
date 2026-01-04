@@ -149,7 +149,7 @@
         <div class="nav-links">
             <a href="{% url 'buyer_dashboard' %}">Dashboard</a>
             <a href="{% url 'buyer_buying_prices' %}" class="active">Buying Prices</a>
-            <a href="#">Shop Products</a>
+            <a href="{% url 'buyer_shop_products' %}">Shop Products</a>
             <a href="#">Sell Requests</a>
             <a href="{% url 'logout' %}">Logout</a>
         </div>
@@ -185,7 +185,7 @@
                 <label>Unit</label>
                 <input type="text" name="unit" value="kg">
 
-                <label>Minimum Quantity</label>
+                <label>Minimum Quantity ( Kg )</label>
                 <input type="number" name="min_quantity" required>
 
                 <button type="submit">Save Buying Price</button>

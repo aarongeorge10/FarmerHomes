@@ -3,70 +3,136 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>{{ market.name }} | Products</title>
+    <title>{{ market.name }} | Seed Products</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 
     <style>
+        :root {
+            --green: #2E7D32;
+            --green-dark: #1B5E20;
+            --green-light: #E8F5E9;
+            --bg: #F5F7F6;
+            --radius: 16px;
+            --shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
+        }
+
         body {
-            background: #f5f7f6;
-            font-family: "Poppins", Arial, sans-serif;
+            margin: 0;
+            background: var(--bg);
+            padding-top: 90px;
+        }
+
+        /* NAVBAR */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            height: 70px;
+            background: white;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            z-index: 1000;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo {
+            font-size: 26px;
+        }
+
+        .brand {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--green);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #444;
+            font-weight: 500;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: var(--green);
+        }
+
+        .cart-badge {
+            position: absolute;
+            top: -6px;
+            right: -12px;
+            background: var(--green);
+            color: white;
+            font-size: 12px;
+            padding: 2px 6px;
+            border-radius: 50%;
+        }
+
+        /* PAGE */
+        .container {
+            max-width: 1200px;
+            margin: auto;
             padding: 40px;
         }
 
         h2 {
-            color: #2E7D32;
-            margin-bottom: 20px;
-        }
-
-        /* CATEGORY TABS */
-        .tabs {
-            display: flex;
-            gap: 12px;
+            color: var(--green);
             margin-bottom: 30px;
         }
 
-        .tab {
-            padding: 10px 18px;
-            border-radius: 10px;
-            text-decoration: none;
-            background: #e8f5e9;
-            color: #2E7D32;
-            font-weight: 500;
-        }
-
-        .tab.active {
-            background: #2E7D32;
-            color: white;
-        }
-
-        /* PRODUCT GRID */
+        /* PRODUCTS */
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
             gap: 25px;
         }
 
         .product-card {
             background: white;
-            padding: 18px;
-            border-radius: 14px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+            padding: 20px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            transition: transform 0.25s ease;
         }
 
-        .product-card img {
-            width: 100%;
-            height: 160px;
-            object-fit: cover;
-            border-radius: 10px;
+        .product-card:hover {
+            transform: translateY(-6px);
         }
 
         .product-card h3 {
-            margin: 10px 0 5px;
-            color: #1B5E20;
+            margin: 0;
+            color: var(--green-dark);
+        }
+
+        .seller {
+            font-size: 14px;
+            color: #666;
+            margin: 6px 0 12px;
         }
 
         .price {
             font-weight: 600;
-            margin: 6px 0;
+            margin: 8px 0;
         }
 
         .stock {
@@ -80,67 +146,84 @@
         }
 
         .buy-btn {
-            display: block;
-            margin-top: 12px;
-            text-align: center;
+            width: 100%;
+            margin-top: 14px;
             padding: 10px;
-            background: #2E7D32;
+            background: var(--green);
             color: white;
-            border-radius: 8px;
-            text-decoration: none;
+            border-radius: 10px;
+            border: none;
+            font-size: 14px;
+            cursor: pointer;
         }
 
         .buy-btn:hover {
-            background: #1B5E20;
+            background: var(--green-dark);
         }
     </style>
 </head>
 
 <body>
 
-    <h2>🛒 {{ market.name }} – Products</h2>
+    <!-- NAVBAR -->
+    <div class="navbar">
+        <div class="nav-left">
+            <span class="logo">🌱</span>
+            <span class="brand">Farmer Homes</span>
+        </div>
 
-    <!-- CATEGORY TABS -->
-    <div class="tabs">
-        <a href="?category=seed" class="tab {% if active_category == 'seed' %}active{% endif %}">
-            🌱 Seeds
-        </a>
-        <a href="?category=fertilizer" class="tab {% if active_category == 'fertilizer' %}active{% endif %}">
-            🧪 Fertilizers
-        </a>
-        <a href="?category=tool" class="tab {% if active_category == 'tool' %}active{% endif %}">
-            🔧 Tools
-        </a>
+        <div class="nav-links">
+            <a href="{% url 'user_dashboard' %}">Dashboard</a>
+            <a href="{% url 'seed_markets' %}" class="active">Seed Markets</a>
+            <a href="{% url 'nearest_markets' %}">Sell Crops</a>
+
+            <!-- CART -->
+            <a href="{% url 'view_cart' %}" style="position:relative;">
+                🛒 Cart
+                {% if request.session.cart_count %}
+                <span class="cart-badge">
+                    {{ request.session.cart_count }}
+                </span>
+                {% endif %}
+            </a>
+
+            <a href="{% url 'logout' %}">Logout</a>
+        </div>
     </div>
 
-    <!-- PRODUCTS -->
-    <div class="grid">
-        {% for item in products %}
-        <div class="product-card">
+    <!-- CONTENT -->
+    <div class="container">
+        <h2>🌾 Seed Products at {{ market.name }}</h2>
 
-            {% if item.product.image %}
-            <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
-            {% endif %}
+        <div class="grid">
+            {% for item in products %}
+            <div class="product-card">
+                <h3>{{ item.product.name }}</h3>
 
-            <h3>{{ item.product.name }}</h3>
-            <p class="price">₹{{ item.price }} / {{ item.unit }}</p>
+                <div class="seller">
+                    🏪
+                    {{ item.buyer.business_name|default:item.buyer.user.username }}
+                </div>
 
-            <p class="stock">
-                Available:
-                {% if item.quantity_available < 10 %} <span class="low-stock">{{ item.quantity_available }} (Low
-                    stock)</span>
-                    {% else %}
-                    {{ item.quantity_available }}
-                    {% endif %}
-            </p>
+                <div class="price">
+                    💰 ₹{{ item.price }} / {{ item.unit }}
+                </div>
 
-            <p>Seller: {{ item.seller.username }}</p>
+                <div class="stock {% if item.stock_quantity <= 5 %}low-stock{% endif %}">
+                    📦 Stock: {{ item.stock_quantity }} {{ item.unit }}
+                </div>
 
-            <a href="#" class="buy-btn">Buy Now</a>
+                <form method="post" action="{% url 'add_to_cart' item.id %}">
+                    {% csrf_token %}
+                    <button class="buy-btn">
+                        🛒 Add to Cart
+                    </button>
+                </form>
+            </div>
+            {% empty %}
+            <p>No seed products available.</p>
+            {% endfor %}
         </div>
-        {% empty %}
-        <p>No products available in this category.</p>
-        {% endfor %}
     </div>
 
 </body>

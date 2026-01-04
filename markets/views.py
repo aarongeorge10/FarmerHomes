@@ -3,8 +3,9 @@ from .models import Market
 from .utils import haversine
 from farmersaccapp.decorators import admin_required, farmer_required
 from farmersaccapp.models import AllUser
-from products.models import MarketProduct
+from farmersaccapp.models import FarmerProfile
 from buyersapp.models import BuyerBuyPrice
+from buyersapp.models import BuyerSellProduct
 
 
 
@@ -65,9 +66,68 @@ def public_markets(request):
         "markets": markets
     })
 
+def nearest_markets(request):
+    farmer = get_object_or_404(
+        FarmerProfile,
+        user_id=request.session.get("user_id")
+    )
+
+    has_location = farmer.latitude and farmer.longitude
+    markets_data = []
+
+    if has_location:
+        markets = Market.objects.filter(is_active=True)
+
+        for market in markets:
+            distance = haversine(
+                farmer.latitude,
+                farmer.longitude,
+                float(market.latitude),
+                float(market.longitude)
+            )
+            markets_data.append({
+                "market": market,
+                "distance": distance
+            })
+
+        markets_data.sort(key=lambda x: x["distance"])
+
+    return render(request, "markets/nearest_markets.html", {
+        "markets": markets_data,
+        "has_location": has_location
+    })
+
+
+def market_products(request, market_id):
+    market = get_object_or_404(Market, id=market_id)
+
+    category = request.GET.get("category")
+
+    products = BuyerSellProduct.objects.filter(
+        market=market
+    ).select_related(
+        "product",
+        "buyer",
+        "buyer__user"
+    )
+
+    # 🔍 Optional category filter
+    if category:
+        products = products.filter(
+            product__category__key=category
+        )
+
+    # 🔍 Only available products
+    products = products.filter(is_available=True)
+
+    return render(request, "markets/market_products.html", {
+        "market": market,
+        "products": products
+    })
+
 
 @farmer_required
-def nearest_markets(request):
+def seed_markets(request):
     user = request.current_user
     farmer = user.farmer_profile
 
@@ -81,53 +141,10 @@ def nearest_markets(request):
 
     if farmer.latitude and farmer.longitude:
         for market in markets:
-            distance = haversine(
-                float(farmer.latitude),
-                float(farmer.longitude),
-                float(market.latitude),
-                float(market.longitude)
-            )
-            market_list.append({
-                "market": market,
-                "distance": round(distance, 2)
-            })
-
-        market_list.sort(key=lambda x: x["distance"])
-
-    return render(request, "markets/nearest_markets.html", {
-        "markets": market_list,
-        "has_location": bool(farmer.latitude and farmer.longitude)
-    })
-
-
-def market_products(request, market_id):
-    market = get_object_or_404(Market, id=market_id)
-
-    buyer_prices = BuyerBuyPrice.objects.filter(
-        market=market,
-        is_active=True
-    ).select_related("product", "buyer")
-
-    return render(request, "markets/market_products.html", {
-        "market": market,
-        "buyer_prices": buyer_prices
-    })
-
-@farmer_required
-def seed_markets(request):
-    user = request.current_user
-    farmer = user.farmer_profile
-
-    markets = Market.objects.filter(is_active=True)
-
-    market_list = []
-
-    if farmer.latitude and farmer.longitude:
-        for market in markets:
-            has_seeds = MarketProduct.objects.filter(
+            has_seeds = BuyerSellProduct.objects.filter(
                 market=market,
-                product__category="seed",  # change if FK
-                is_active=True
+                product__category__key="seed",
+                is_available=True
             ).exists()
 
             if has_seeds:
@@ -148,4 +165,3 @@ def seed_markets(request):
     return render(request, "markets/seed_markets.html", {
         "markets": market_list
     })
-21

@@ -24,7 +24,7 @@ class BuyerBuyPrice(models.Model):
         related_name="buyer_prices"
     )
 
-    price_per_unit = models.DecimalField(max_digits=8, decimal_places=2)
+    price_per_unit = models.DecimalField(max_digits=8, decimal_places=2,default=1)
     unit = models.CharField(max_length=20, default="kg")
     min_quantity = models.PositiveIntegerField(default=1)
 
@@ -62,38 +62,17 @@ class BuyerSellProduct(models.Model):
     is_available = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    def save(self, *args, **kwargs):
+    # Auto-disable ONLY when stock is zero
+        if self.stock_quantity <= 0:
+            self.is_available = False
+
+        super().save(*args, **kwargs)
+
+
     def __str__(self):
         return f"{self.product.name} - ₹{self.price} ({self.market.name})"
 
 
 
 
-class SellRequest(models.Model):
-    farmer = models.ForeignKey(
-        FarmerProfile,
-        on_delete=models.CASCADE,
-        related_name="sell_requests"
-    )
-
-    buyer_price = models.ForeignKey(
-        BuyerBuyPrice,
-        on_delete=models.CASCADE,
-        related_name="sell_requests"
-    )
-
-    quantity = models.PositiveIntegerField()
-
-    status = models.CharField(
-        max_length=20,
-        choices=(
-            ("pending", "Pending"),
-            ("approved", "Approved"),
-            ("rejected", "Rejected"),
-        ),
-        default="pending"
-    )
-
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"{self.farmer.user.username} → {self.buyer_price.product.name}"

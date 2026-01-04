@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Market Orders</title>
+    <style>
+        body {
+            background: #f5f7f6;
+            font-family: Poppins, sans-serif;
+            padding: 40px;
+        }
+
+        h2 {
+            color: #2E7D32;
+            margin-bottom: 20px;
+        }
+
+        .order-card {
+            background: white;
+            padding: 20px;
+            border-radius: 14px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            padding: 8px 14px;
+            border-radius: 8px;
+            text-decoration: none;
+            color: white;
+            font-size: 14px;
+            margin-right: 8px;
+        }
+
+        .approve {
+            background: #2E7D32;
+        }
+
+        .reject {
+            background: #c62828;
+        }
+
+        .view {
+            background: #1565c0;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>📦 Incoming Market Orders</h2>
+
+    {% for order in orders %}
+    <div class="order-card">
+        <p><strong>Farmer:</strong> {{ order.farmer.user.username }}</p>
+        <p><strong>Market:</strong> {{ order.market.name }}</p>
+        <p><strong>Status:</strong> {{ order.status }}</p>
+
+        <ul>
+            {% for item in order.items.all %}
+            <li>{{ item.product.name }} – {{ item.quantity }} {{ item.unit }}</li>
+            {% endfor %}
+        </ul>
+
+        {% if order.status == "pending" %}
+        <a href="{% url 'approve_market_order' order.id %}" class="btn approve">Approve</a>
+        <a href="{% url 'reject_market_order' order.id %}" class="btn reject">Reject</a>
+        {% elif order.status == "approved" %}
+        <a href="{% url 'market_order_qr' order.id %}" class="btn view">View QR</a>
+        {% endif %}
+    </div>
+    {% empty %}
+    <p>No orders yet.</p>
+    {% endfor %}
+</body>
+
+</html>

@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Add Shop Product</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --green: #2E7D32;
+            --green-dark: #1B5E20;
+            --green-light: #E8F5E9;
+            --bg: #F5F7F6;
+            --radius: 16px;
+            --shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            padding-top: 80px;
+        }
+
+        /* ================= NAVBAR ================= */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            height: 70px;
+            background: linear-gradient(90deg, var(--green-dark), var(--green));
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            color: white;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+
+        .navbar h1 {
+            font-size: 20px;
+            margin: 0;
+            font-weight: 600;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 18px;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 15px;
+            padding: 8px 14px;
+            border-radius: 8px;
+            transition: 0.25s;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            background: rgba(255, 255, 255, 0.18);
+        }
+
+        /* ================= FORM CARD ================= */
+        .container {
+            max-width: 600px;
+            margin: auto;
+            padding: 30px;
+        }
+
+        .card {
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 30px;
+        }
+
+        h2 {
+            margin-top: 0;
+            color: var(--green-dark);
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        label {
+            font-size: 14px;
+            font-weight: 500;
+            display: block;
+            margin-bottom: 6px;
+            color: #333;
+        }
+
+        select,
+        input {
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: 10px;
+            border: 1px solid #ddd;
+            margin-bottom: 18px;
+            font-size: 14px;
+        }
+
+        select:focus,
+        input:focus {
+            outline: none;
+            border-color: var(--green);
+            box-shadow: 0 0 0 2px rgba(46, 125, 50, 0.15);
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: var(--green);
+            color: white;
+            padding: 12px;
+            border-radius: 12px;
+            border: none;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.25s;
+        }
+
+        .submit-btn:hover {
+            background: var(--green-dark);
+            transform: translateY(-2px);
+        }
+
+        /* ================= RESPONSIVE ================= */
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 0 20px;
+            }
+
+            .navbar h1 {
+                font-size: 16px;
+            }
+
+            .container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <div class="navbar">
+        <h1>🛒 Buyer | Add Shop Product</h1>
+        <div class="nav-links">
+            <a href="{% url 'buyer_dashboard' %}">Dashboard</a>
+            <a href="{% url 'buyer_buying_prices' %}">Buying Prices</a>
+            <a href="{% url 'buyer_shop_products' %}" class="active">Shop Products</a>
+            <a href="#">Sell Requests</a>
+            <a href="{% url 'logout' %}">Logout</a>
+        </div>
+    </div>
+
+    <!-- FORM -->
+    <div class="container">
+        <div class="card">
+            <h2>Add Product to Shop</h2>
+
+            <form method="post">
+                {% csrf_token %}
+
+                <label>Market</label>
+                <select name="market" required>
+                    <option value="">-- Select Market --</option>
+                    {% for market in markets %}
+                    <option value="{{ market.id }}">
+                        {{ market.name }} ({{ market.district }})
+                    </option>
+                    {% endfor %}
+                </select>
+
+                <label>Product</label>
+                <select name="product" required>
+                    {% for product in products %}
+                    <option value="{{ product.id }}">{{ product.name }}</option>
+                    {% endfor %}
+                </select>
+
+                <label>Price</label>
+                <input type="number" step="0.01" name="price" required>
+
+                <label>Stock Quantity</label>
+                <input type="number" name="stock_quantity" required>
+
+                <label>Unit</label>
+                <input type="text" name="unit" value="kg" required>
+
+                <button type="submit" class="submit-btn">
+                    ➕ Add Product
+                </button>
+            </form>
+        </div>
+    </div>
+
+</body>
+
+</html>
