@@ -320,7 +320,8 @@
         <nav class="menu">
             <a href="{% url 'home' %}" class="link"><span class="link-icon">home</span><span
                     class="link-title">Home</span></a>
-            <a href="{% url 'public_markets' %}" class="link"><span class="link-icon">store</span><span class="link-title">Market</span></a>
+            <a href="{% url 'public_markets' %}" class="link"><span class="link-icon">store</span><span
+                    class="link-title">Market</span></a>
             <a href="{% url 'login' %}" class="link"><span class="link-icon">login</span><span
                     class="link-title">Login</span></a>
         </nav>
@@ -377,10 +378,13 @@
                         <p>Sell crops directly to buyers with secure QR-code dispatch.</p>
                     </div>
                 </a>
-                <div class="action-card"><span class="material-symbols-rounded icon">trending_up</span>
-                    <h3>Market Prices</h3>
-                    <p>Live mandi & buyer price updates.</p>
-                </div>
+                <a href="{% url 'public_markets' %}" class="card-link">
+                    <div class="action-card">
+                        <span class="material-symbols-rounded icon">trending_up</span>
+                        <h3>Market Prices</h3>
+                        <p>Live mandi & buyer price updates.</p>
+                    </div>
+                </a>
                 <div class="action-card"><span class="material-symbols-rounded icon">cloud</span>
                     <h3>Weather Advisory</h3>
                     <p>Weather-based smart recommendations.</p>
@@ -401,7 +405,7 @@
             setTimeout(() => {
                 loader.style.display = "none";
                 content.style.display = "block";
-            }, 1000);
+            }, 5000);
         });
 
         const cards = document.querySelectorAll(".action-card");

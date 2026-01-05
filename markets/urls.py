@@ -23,4 +23,6 @@ urlpatterns = [
     # PUBLIC
     # =========================
     path("all/", views.public_markets, name="public_markets"),
+    path("public/<int:market_id>/products/", views.public_market_products, name="public_market_products"),
+
 ]

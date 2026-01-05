@@ -251,10 +251,14 @@ def my_market_carts(request):
 
 @buyer_required
 def complete_market_order(request, order_id):
+    user_id = request.session.get("user_id")
+    user = get_object_or_404(AllUser, id=user_id, role="buyer")
+    buyer = get_object_or_404(BuyerProfile, user=user)
+
     order = get_object_or_404(
         MarketSellOrder,
         id=order_id,
-        buyer=request.current_user.buyer_profile
+        buyer=buyer
     )
 
     if order.status == "approved":

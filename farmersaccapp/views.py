@@ -79,6 +79,9 @@ def register(request):
             user.is_approved = False
             user.save()
 
+            # ✅ CREATE FARMER PROFILE IMMEDIATELY
+            FarmerProfile.objects.create(user=user)
+
             return render(request, "user/login.html", {
                 "success": "Registration successful. Waiting for admin approval."
             })
@@ -236,7 +239,9 @@ def userlogout(request):
 def user_dashboard(request):
     user_id = request.session.get("user_id")
     user = get_object_or_404(AllUser, id=user_id, role="farmer")
-    farmer = get_object_or_404(FarmerProfile, user=user)
+
+    # ✅ Always ensure profile exists
+    farmer, created = FarmerProfile.objects.get_or_create(user=user)
 
     notifications = FarmerNotification.objects.filter(
         farmer=farmer
@@ -252,6 +257,7 @@ def user_dashboard(request):
         "notifications": notifications,
         "unread_count": unread_count
     })
+
 
 # FORGOT PASSWORD
 # ===============================

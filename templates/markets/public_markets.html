@@ -129,9 +129,10 @@
             <p>{{ market.village }}, {{ market.district }}, {{ market.state }}</p>
 
             <!-- ✅ VIEW PRODUCTS BUTTON -->
-            <a href="#" class="view-btn">
+            <a href="{% url 'public_market_products' market.id %}" class="view-btn">
                 View Products
             </a>
+
         </div>
         {% empty %}
         <p>No markets available</p>

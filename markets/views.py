@@ -66,6 +66,23 @@ def public_markets(request):
         "markets": markets
     })
 
+def public_market_products(request, market_id):
+    market = get_object_or_404(Market, id=market_id, is_active=True)
+
+    products = BuyerSellProduct.objects.filter(
+        market=market,
+        is_available=True
+    ).select_related(
+        "product",
+        "buyer"
+    )
+
+    return render(request, "markets/public_market_products.html", {
+        "market": market,
+        "products": products
+    })
+
+
 def nearest_markets(request):
     farmer = get_object_or_404(
         FarmerProfile,
