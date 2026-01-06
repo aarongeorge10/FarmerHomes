@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .models import ProductCategory, Product
 from farmersaccapp.decorators import admin_required
 from .forms import ProductForm
+from buyersapp.models import BuyerSellProduct
 
 @admin_required
 def admin_products(request):
@@ -73,4 +74,20 @@ def product_list(request, category_key):
     return render(request, "products/product_list.html", {
         "category": category,
         "products": products
+    })
+
+
+def product_detail(request, pk):
+    # 🔹 Get product
+    product = get_object_or_404(Product, id=pk, is_active=True)
+
+    # 🔹 Get buyer-added products for this product
+    listings = BuyerSellProduct.objects.filter(
+        product=product,
+        is_available=True
+    ).select_related("buyer", "market")
+
+    return render(request, "markets/product_detail.html", {
+        "product": product,
+        "listings": listings
     })

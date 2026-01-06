@@ -106,6 +106,25 @@
             color: #888;
             margin-top: 10px;
         }
+
+        .product-row {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .product-image {
+            width: 140px;
+            height: 140px;
+            border-radius: 12px;
+            object-fit: cover;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
+            background: #f0f0f0;
+        }
+
+        .product-info {
+            flex: 1;
+        }
     </style>
 </head>
 
@@ -127,13 +146,29 @@
 
         {% for item in products %}
         <div class="product-card">
-            <h3>{{ item.product.name }}</h3>
-            <p class="meta">
-                Price: ₹{{ item.price }} / {{ item.unit }}<br>
-                Available Quantity: {{ item.stock_quantity }} <br>
-                Buyer: {{ item.buyer.business_name }}                 
-            </p>
-            
+            <div class="product-row">
+
+                <!-- 🖼️ PRODUCT IMAGE -->
+                <a href="{% url 'product_detail' item.product.id %}">
+                    {% if item.product.image %}
+                    <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="product-image">
+                    {% else %}
+                    <img src="https://via.placeholder.com/140?text=No+Image" class="product-image">
+                    {% endif %}
+                </a>
+
+                <!-- 📄 PRODUCT DETAILS -->
+                <div class="product-info">
+                    <h3>{{ item.product.name }}</h3>
+                    <p class="meta">
+                        Price: ₹{{ item.price }} / {{ item.unit }}<br>
+                        Available Quantity: {{ item.stock_quantity }} <br>
+                        Product Type: {{ item.product.category|title }} <br>
+                        Buyer: {{ item.buyer.business_name }}
+                    </p>
+                </div>
+
+            </div>
         </div>
         {% empty %}
         <p>No products available in this market.</p>
