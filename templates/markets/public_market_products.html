@@ -125,6 +125,16 @@
         .product-info {
             flex: 1;
         }
+
+        .card-link {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .product-card {
+            cursor: pointer;
+        }
     </style>
 </head>
 
@@ -145,31 +155,31 @@
         <h2>Products in {{ market.name }}</h2>
 
         {% for item in products %}
-        <div class="product-card">
-            <div class="product-row">
+        <a href="{% url 'product_detail' item.product.id %}" class="card-link">
+            <div class="product-card">
+                <div class="product-row">
 
-                <!-- 🖼️ PRODUCT IMAGE -->
-                <a href="{% url 'product_detail' item.product.id %}">
+                    <!-- 🖼️ PRODUCT IMAGE -->
                     {% if item.product.image %}
                     <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="product-image">
                     {% else %}
                     <img src="https://via.placeholder.com/140?text=No+Image" class="product-image">
                     {% endif %}
-                </a>
 
-                <!-- 📄 PRODUCT DETAILS -->
-                <div class="product-info">
-                    <h3>{{ item.product.name }}</h3>
-                    <p class="meta">
-                        Price: ₹{{ item.price }} / {{ item.unit }}<br>
-                        Available Quantity: {{ item.stock_quantity }} <br>
-                        Product Type: {{ item.product.category|title }} <br>
-                        Buyer: {{ item.buyer.business_name }}
-                    </p>
+                    <!-- 📄 PRODUCT DETAILS -->
+                    <div class="product-info">
+                        <h3>{{ item.product.name }}</h3>
+                        <p class="meta">
+                            Price: ₹{{ item.price }} / {{ item.unit }}<br>
+                            Available Quantity: {{ item.stock_quantity }} <br>
+                            Product Type: {{ item.product.category|title }} <br>
+                            Buyer: {{ item.buyer.business_name }}
+                        </p>
+                    </div>
+
                 </div>
-
             </div>
-        </div>
+        </a>
         {% empty %}
         <p>No products available in this market.</p>
         {% endfor %}
