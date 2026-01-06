@@ -14,8 +14,8 @@ urlpatterns = [
     # =========================
     path("nearby/", views.user_markets, name="user_markets"),
     path("nearest/", views.nearest_markets, name="nearest_markets"),
-    path("seed-markets/", views.seed_markets, name="seed_markets"),
-    path("market/<int:market_id>/products/", views.market_products, name="market_products"),
+    path("farmer/markets/", views.farmer_markets, name="farmer_markets"),
+path("markets/<int:market_id>/products/", views.market_products, name="market_products"),
 
     # 👉 IMPORTED FROM buyersapp.views
     path("market/<int:market_id>/buyers/", market_buying_prices, name="market_buying_prices"),

@@ -163,7 +163,7 @@
 
         <div class="nav-links">
             <a href="{% url 'user_dashboard' %}">Dashboard</a>
-            <a href="{% url 'seed_markets' %}" class="active">Seed Markets</a>
+            <a href="{% url 'farmer_markets' %}" class="active">Markets</a>
             <a href="{% url 'nearest_markets' %}">Sell Crops</a>
             <a href="{% url 'farmer_profile' %}">Profile</a>
             <a href="{% url 'logout' %}">Logout</a>
@@ -173,7 +173,7 @@
     <!-- ================= CONTENT ================= -->
     <div class="container">
 
-        <h2>🌱 Seed Markets Near You</h2>
+        <h2>🌱  Markets Near You</h2>
 
         {% for item in markets %}
         <div class="market-card">
@@ -181,12 +181,12 @@
             <p>{{ item.market.village }}, {{ item.market.district }}</p>
             <p class="distance">📍 {{ item.distance }} km away</p>
 
-            <a class="btn" href="{% url 'market_products' item.market.id %}?category=seed">
-                View Seed Products →
+            <a class="btn" href="{% url 'market_products' item.market.id %}">
+                View Products →
             </a>
         </div>
         {% empty %}
-        <p>No seed markets found nearby.</p>
+        <p>No markets found nearby.</p>
         {% endfor %}
 
     </div>

@@ -240,12 +240,13 @@ def user_dashboard(request):
     user_id = request.session.get("user_id")
     user = get_object_or_404(AllUser, id=user_id, role="farmer")
 
-    # ✅ Always ensure profile exists
+    # ✅ Ensure farmer profile exists
     farmer, created = FarmerProfile.objects.get_or_create(user=user)
 
+    # 🔔 ONLY RECENT 2 NOTIFICATIONS
     notifications = FarmerNotification.objects.filter(
         farmer=farmer
-    ).order_by("-created_at")
+    ).order_by("-created_at")[:2]
 
     unread_count = FarmerNotification.objects.filter(
         farmer=farmer,
@@ -399,4 +400,19 @@ def compare_buyers(request, product_id):
 
     return render(request, "farmer/compare_buyers.html", {
         "prices": prices
+    })
+
+@farmer_required
+def farmer_notifications(request):
+    user_id = request.session.get("user_id")
+    user = get_object_or_404(AllUser, id=user_id, role="farmer")
+
+    farmer = get_object_or_404(FarmerProfile, user=user)
+
+    notifications = FarmerNotification.objects.filter(
+        farmer=farmer
+    ).order_by("-created_at")
+
+    return render(request, "user/notifications.html", {
+        "notifications": notifications
     })

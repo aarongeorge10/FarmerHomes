@@ -7,6 +7,7 @@ from markets.models import Market
 from farmersaccapp.models import FarmerProfile
 from trading.models import MarketCartItem
 from trading.models import MarketSellOrder
+from django.views.decorators.http import require_POST
 
 
 @buyer_required
@@ -189,6 +190,17 @@ def add_shop_product(request):
         "markets": markets
     })
 
+
+@buyer_required
+@require_POST
+def buyer_delete_shop_product(request, pk):
+    product = get_object_or_404(
+        BuyerSellProduct,
+        id=pk,
+        buyer=request.current_user.buyer_profile
+    )
+    product.delete()
+    return redirect("buyer_shop_products")
 
 
 @buyer_required

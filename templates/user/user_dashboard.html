@@ -31,7 +31,7 @@
             color: var(--dark);
         }
 
-        /* NAVBAR */
+        /* ================= NAVBAR ================= */
         .navbar {
             background: white;
             padding: 16px 40px;
@@ -78,15 +78,9 @@
             text-decoration: none;
             border-radius: 8px;
             font-size: 14px;
-            transition: background 0.2s ease;
         }
 
-        .logout-btn:hover {
-            background: #1B5E20;
-        }
-
-
-        /* DASHBOARD */
+        /* ================= DASHBOARD ================= */
         .dashboard {
             padding: 40px;
             max-width: 1200px;
@@ -107,25 +101,32 @@
             font-size: 30px;
         }
 
-        .welcome-card p {
-            margin: 0;
-            opacity: 0.9;
-        }
-
-        /* GRID */
+        /* ================= GRID ================= */
         .cards {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
             gap: 25px;
+            align-items: stretch;
+        }
+
+        .cards a {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            height: 100%;
         }
 
         .card {
             background: white;
-            padding: 25px;
+            padding: 20px;
             border-radius: var(--radius);
             box-shadow: var(--shadow);
             transition: transform 0.25s ease;
             cursor: pointer;
+
+            display: flex;
+            flex-direction: column;
+            height: 100%;
         }
 
         .card:hover {
@@ -139,13 +140,31 @@
 
         .card p {
             font-size: 14px;
-            opacity: 0.8;
+            opacity: 0.85;
         }
 
-        .card a {
-            text-decoration: none;
-            color: var(--green);
+        .card span {
+            margin-top: auto;
             font-weight: 500;
+            color: var(--green);
+        }
+
+        /* ================= NOTIFICATIONS ================= */
+        .notification-list {
+            list-style: none;
+            padding-left: 0;
+            margin: 0;
+            max-height: 120px;
+            overflow: hidden;
+        }
+
+        .notification-list li {
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .notification-list small {
+            color: #777;
         }
     </style>
 </head>
@@ -163,75 +182,85 @@
             <span class="welcome-text">
                 Welcome, <strong>{{ username }}</strong>
             </span>
-
             <a href="{% url 'logout' %}" class="logout-btn">Logout</a>
         </div>
     </div>
 
-    <!-- DASHBOARD CONTENT -->
+    <!-- DASHBOARD -->
     <div class="dashboard">
 
-        <!-- WELCOME -->
         <div class="welcome-card">
             <h1>Hello {{ username }} 👋</h1>
             <p>Your smart agriculture dashboard is ready.</p>
         </div>
 
-        <!-- ACTION CARDS -->
         <div class="cards">
 
-            <div class="card">
-                <h3>🌾 Seeds Marketplace</h3>
-                <p>Browse and purchase high-quality seeds for your crops.</p>
-                <a href="{% url 'seed_markets' %}">Explore →</a>
-            </div>
+            <a href="{% url 'farmer_markets' %}">
+                <div class="card">
+                    <h3>🌾 Marketplace</h3>
+                    <p>Browse and purchase high-quality seeds for your crops.</p>
+                    <span>Explore Market →</span>
+                </div>
+            </a>
 
-            <div class="card">
-                <h3>🌦 Weather Updates</h3>
-                <p>Get real-time weather insights for better farming decisions.</p>
-                <a href="#">Check Weather →</a>
-            </div>
+            <a href="{% url 'nearest_markets' %}">
+                <div class="card">
+                    <h3>📈 Sell Crops (Market)</h3>
+                    <p>Sell crops directly to buyers and stay updated with mandi prices.</p>
+                    <span>Find Nearby Markets →</span>
+                </div>
+            </a>
 
-            <div class="card">
-                <h3>📦 Order History</h3>
-                <p>View your past purchases, sales, and transaction details.</p>
-                <a href="{% url 'farmer_orders' %}">View Orders →</a>
-            </div>
+            <a href="#">
+                <div class="card">
+                    <h3>🌦 Weather Updates</h3>
+                    <p>Get real-time weather insights for better farming decisions.</p>
+                    <span>Check Weather →</span>
+                </div>
+            </a>
 
-            <div class="card">
-                <h3>📈 Sell Crops (Market) </h3>
-                <p>Sell crops directly to buyers, Stay updated with the latest mandi and crop prices. </p>
-                <a href="{% url 'nearest_markets' %}">Find Nearby Markets →</a>
-            </div>
+            <a href="{% url 'farmer_orders' %}">
+                <div class="card">
+                    <h3>📦 Order History</h3>
+                    <p>View your past purchases, sales, and transaction details.</p>
+                    <span>View Orders →</span>
+                </div>
+            </a>
 
-            <div class="card">
-                <h3>🧑‍🌾 My Profile</h3>
-                <p>Manage your personal and farming information.</p>
-                <a href="{% url 'farmer_profile' %}">Update Profile →</a>
-            </div>
+            <a href="{% url 'farmer_notifications' %}">
+                <div class="card">
+                    <h3>🔔 Notifications</h3>
 
-            <div class="card">
-                <h3>🔔 Notifications</h3>
+                    {% if notifications %}
+                    <ul class="notification-list">
+                        {% for note in notifications %}
+                        <li>
+                            {{ note.message }}<br>
+                            <small>{{ note.created_at|date:"d M Y, h:i A" }}</small>
+                        </li>
+                        {% endfor %}
+                    </ul>
 
-                {% if notifications %}
-                <ul style="list-style:none; padding-left:0;">
-                    {% for note in notifications %}
-                    <li style="margin-bottom:10px;">
-                        {{ note.message }}<br>
-                        <small style="color:#777;">
-                            {{ note.created_at|date:"d M Y, h:i A" }}
-                        </small>
-                    </li>
-                    {% endfor %}
-                </ul>
+                    {% if unread_count > 0 %}
+                    <p><strong>{{ unread_count }}</strong> unread notification(s)</p>
+                    {% endif %}
+                    {% else %}
+                    <p>No notifications</p>
+                    {% endif %}
 
-                {% if unread_count > 0 %}
-                <p><strong>{{ unread_count }}</strong> unread notification(s)</p>
-                {% endif %}
-                {% else %}
-                <p>No notifications</p>
-                {% endif %}
-            </div>
+                    <span>View All →</span>
+                </div>
+            </a>
+
+            <a href="{% url 'farmer_profile' %}">
+                <div class="card">
+                    <h3>🧑‍🌾 My Profile</h3>
+                    <p>Manage your personal and farming information.</p>
+                    <span>Update Profile →</span>
+                </div>
+            </a>
+
         </div>
     </div>
 

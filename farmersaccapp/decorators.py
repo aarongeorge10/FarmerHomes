@@ -1,5 +1,6 @@
 from django.shortcuts import redirect
 from .models import AllUser
+from functools import wraps
 
 def admin_required(view_func):
     def wrapper(request, *args, **kwargs):
@@ -27,15 +28,23 @@ def farmer_required(view_func):
     return wrapper
 
 def buyer_required(view_func):
+    @wraps(view_func)
     def wrapper(request, *args, **kwargs):
-        if request.session.get("role") != "buyer":
+        user_id = request.session.get("user_id")
+        role = request.session.get("role")
+
+        if not user_id or role != "buyer":
             return redirect("login")
 
-        user = AllUser.objects.get(id=request.session["user_id"])
+        user = AllUser.objects.get(id=user_id)
+
         if not user.is_approved:
             return redirect("login")
 
-        return view_func(request, *args, **kwargs)
-    return wrapper
+        # 🔥 Attach buyer user once (JUST LIKE farmer_required)
+        request.current_user = user
 
+        return view_func(request, *args, **kwargs)
+
+    return wrapper
 

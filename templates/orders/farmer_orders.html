@@ -163,9 +163,9 @@
         <div class="brand">🌱 Farmer Homes</div>
         <div class="nav-links">
             <a href="{% url 'user_dashboard' %}">Dashboard</a>
-            <a href="{% url 'seed_markets' %}">Seed Markets</a>
+            <a href="{% url 'farmer_markets' %}">Market</a>
+            <a href="{% url 'nearest_markets' %}">Sell Crops</a>
             <a href="{% url 'farmer_orders' %}" class="active">My Orders</a>
-            <a href="{% url 'view_cart' %}">Cart</a>
             <a href="{% url 'logout' %}">Logout</a>
         </div>
     </div>
@@ -199,7 +199,7 @@
                 <td>
                     {% if order.invoice %}
                     <a href="{% url 'invoice_pdf' order.invoice.id %}" class="invoice-link">
-                        Download PDF
+                        Download Invoice
                     </a>
                     {% else %}
                     —

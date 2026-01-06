@@ -16,4 +16,5 @@ urlpatterns = [
     path("dashboard/buyers/approve/<int:user_id>/", views.approve_buyer,name="approve_buyer"),
     path("dashboard/buyers/reject/<int:user_id>/", views.reject_buyer,name="reject_buyer"),
     path("farmer_profile/", views.farmer_profile, name="farmer_profile"),
+    path("farmer/notifications/", views.farmer_notifications, name="farmer_notifications"),
 ]

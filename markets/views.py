@@ -121,30 +121,26 @@ def market_products(request, market_id):
     category = request.GET.get("category")
 
     products = BuyerSellProduct.objects.filter(
-        market=market
+        market=market,
+        is_available=True
     ).select_related(
         "product",
         "buyer",
         "buyer__user"
     )
 
-    # 🔍 Optional category filter
     if category:
-        products = products.filter(
-            product__category__key=category
-        )
-
-    # 🔍 Only available products
-    products = products.filter(is_available=True)
+        products = products.filter(product__category__key=category)
 
     return render(request, "markets/market_products.html", {
         "market": market,
-        "products": products
+        "products": products,
+        "active_category": category
     })
 
 
 @farmer_required
-def seed_markets(request):
+def farmer_markets(request):
     user = request.current_user
     farmer = user.farmer_profile
 
@@ -158,13 +154,12 @@ def seed_markets(request):
 
     if farmer.latitude and farmer.longitude:
         for market in markets:
-            has_seeds = BuyerSellProduct.objects.filter(
+            has_products = BuyerSellProduct.objects.filter(
                 market=market,
-                product__category__key="seed",
                 is_available=True
             ).exists()
 
-            if has_seeds:
+            if has_products:
                 distance = haversine(
                     float(farmer.latitude),
                     float(farmer.longitude),
@@ -179,6 +174,6 @@ def seed_markets(request):
 
         market_list.sort(key=lambda x: x["distance"])
 
-    return render(request, "markets/seed_markets.html", {
+    return render(request, "markets/farmer_markets.html", {
         "markets": market_list
     })

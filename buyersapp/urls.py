@@ -15,4 +15,5 @@ urlpatterns = [
     path("buyer/shop-products/add/",views.add_shop_product,name="buyer_add_shop_product"),
     path("buyer/shop-products/edit/<int:product_id>/",views.edit_shop_product,name="buyer_edit_shop_product"),
     path("buyer/shop-products/toggle/<int:product_id>/",views.toggle_shop_product,name="buyer_toggle_shop_product"),
+    path("buyer/shop-products/delete/<int:pk>/", views.buyer_delete_shop_product, name="buyer_delete_shop_product"),
 ]

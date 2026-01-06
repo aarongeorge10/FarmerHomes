@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>All Notifications | Farmer Homes</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --green: #2E7D32;
+            --green-light: #E8F5E9;
+            --bg: #F5F7F6;
+            --dark: #1B1B1B;
+            --radius: 16px;
+            --shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--dark);
+        }
+
+        /* NAVBAR */
+        .navbar {
+            background: white;
+            padding: 16px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo {
+            font-size: 26px;
+        }
+
+        .brand {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--green);
+        }
+
+        .nav-right a {
+            text-decoration: none;
+            color: white;
+            background: var(--green);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        /* PAGE */
+        .page {
+            padding: 40px;
+            max-width: 1000px;
+            margin: auto;
+        }
+
+        h2 {
+            color: var(--green);
+            margin-bottom: 25px;
+        }
+
+        .notification {
+            background: white;
+            padding: 20px;
+            border-radius: 14px;
+            box-shadow: var(--shadow);
+            margin-bottom: 18px;
+        }
+
+        .notification p {
+            margin: 0 0 6px;
+            font-weight: 500;
+        }
+
+        .meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            color: #777;
+        }
+
+        .market {
+            font-weight: 500;
+            color: #1B5E20;
+        }
+
+        .empty {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <div class="navbar">
+        <div class="nav-left">
+            <span class="logo">🌱</span>
+            <span class="brand">Farmer Homes</span>
+        </div>
+
+        <div class="nav-right">
+            <a href="{% url 'user_dashboard' %}">Dashboard</a>
+        </div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="page">
+        <h2>🔔 All Notifications</h2>
+
+        {% if notifications %}
+        {% for note in notifications %}
+        <div class="notification">
+            <p>{{ note.message }}</p>
+
+            <div class="meta">
+                <span class="market">
+                    🏪 {{ note.market.name }}
+                </span>
+                <span>
+                    {{ note.created_at|date:"d M Y, h:i A" }}
+                </span>
+            </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <div class="empty">
+            <p>No notifications available.</p>
+        </div>
+        {% endif %}
+    </div>
+
+</body>
+
+</html>
