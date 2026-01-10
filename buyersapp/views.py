@@ -8,6 +8,7 @@ from farmersaccapp.models import FarmerProfile
 from trading.models import MarketCartItem
 from trading.models import MarketSellOrder
 from django.views.decorators.http import require_POST
+from django.contrib import messages
 
 
 @buyer_required
@@ -282,4 +283,20 @@ def market_buying_prices(request, market_id):
         "cart_count": cart_count
     })
 
+@buyer_required
+def buyer_profile(request):
+    user = request.current_user
+    buyer = user.buyer_profile
 
+    if request.method == "POST":
+        buyer.business_name = request.POST.get("business_name")
+        buyer.gst_number = request.POST.get("gst_number")
+        buyer.is_exporter = True if request.POST.get("is_exporter") == "on" else False
+
+        buyer.save()
+        messages.success(request, "Profile updated successfully")
+        return redirect("buyer_profile")
+
+    return render(request, "buyer/profile.html", {
+        "buyer": buyer
+    })

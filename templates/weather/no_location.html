@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    {% extends "user/base.html" %}
+    {% block content %}
+    <h2>📍 Location Required</h2>
+    <p>Please update your farm location in profile to view weather.</p>
+    <a href="{% url 'farmer_profile' %}">Update Profile</a>
+    {% endblock %}
+
+</body>
+
+</html>

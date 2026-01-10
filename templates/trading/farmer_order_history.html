@@ -1,0 +1,139 @@
+{% load tz %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>My Sales History | Farmer Homes</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: "Poppins", sans-serif;
+            background: #f4f7f5;
+        }
+
+        /* NAVBAR */
+        .navbar {
+            background: linear-gradient(90deg, #1B5E20, #2E7D32);
+            padding: 16px 40px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: 600;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            margin-left: 25px;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover {
+            text-decoration: underline;
+        }
+
+        /* PAGE */
+        .container {
+            max-width: 1100px;
+            margin: auto;
+            padding: 40px;
+        }
+
+        h1 {
+            color: #1B5E20;
+            margin-bottom: 25px;
+        }
+
+        /* ORDER CARDS */
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 25px;
+        }
+
+        .status {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .pending {
+            background: #fff3cd;
+        }
+
+        .approved {
+            background: #d4edda;
+        }
+
+        .completed {
+            background: #cce5ff;
+        }
+
+        .rejected {
+            background: #f8d7da;
+        }
+
+        ul {
+            margin-top: 10px;
+        }
+
+        li {
+            margin-bottom: 6px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <div class="navbar">
+        <div class="logo">🌾 Farmer Homes</div>
+        <div class="nav-links">
+            <a href="{% url 'user_dashboard' %}">Dashboard</a>
+            <a href="{% url 'farmer_weather' %}">Weather</a>
+            <a href="{% url 'farmer_order_history' %}">My Sales</a>
+            <a href="{% url 'logout' %}">Logout</a>
+        </div>
+    </div>
+
+    <div class="container">
+
+        <h1>📜 My Crop Sales</h1>
+
+        {% for order in orders %}
+        <div class="card">
+            <h3>Order #{{ order.id }} — {{ order.market.name }}</h3>
+            <p><strong>Buyer:</strong> {{ order.buyer.business_name }}</p>
+
+            <span class="status {{ order.status }}">{{ order.status|title }}</span>
+
+            <ul>
+                {% for item in order.items.all %}
+                <li>{{ item.product.name }} — {{ item.quantity }} {{ item.unit }} @ ₹{{ item.price_per_unit }}</li>
+                {% endfor %}
+            </ul>
+
+            <small>📅 {{ order.created_at|localtime|date:"d M Y, h:i A" }}</small>
+        </div>
+        {% empty %}
+        <p>No orders yet.</p>
+        {% endfor %}
+
+    </div>
+
+</body>
+
+</html>

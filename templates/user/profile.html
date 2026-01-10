@@ -1,6 +1,7 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,7 +17,7 @@
             --bg: #F5F7F6;
             --card: #ffffff;
             --radius: 16px;
-            --shadow: 0 12px 30px rgba(0,0,0,0.12);
+            --shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
         }
 
         * {
@@ -144,78 +145,94 @@
         }
     </style>
 </head>
+
 <body>
 
-<!-- NAVBAR -->
-<div class="navbar">
-    <h2>🌱 Farmer Dashboard</h2>
-    <div class="nav-links">
-        <a href="{% url 'user_dashboard' %}">Dashboard</a>
-        <a href="{% url 'farmer_profile' %}" class="active">Profile</a>
-        <a href="{% url 'logout' %}">Logout</a>
+    <!-- NAVBAR -->
+    <div class="navbar">
+        <h2>🌱 Farmer Dashboard</h2>
+        <div class="nav-links">
+            <a href="{% url 'user_dashboard' %}">Dashboard</a>
+            <a href="{% url 'farmer_profile' %}" class="active">Profile</a>
+            <a href="{% url 'logout' %}">Logout</a>
+        </div>
     </div>
-</div>
 
-<!-- PROFILE FORM -->
-<div class="profile-card">
-    <h3>Farmer Profile</h3>
+    <!-- PROFILE FORM -->
+    <div class="profile-card">
+        <h3>Farmer Profile</h3>
 
-    <form method="post">
-        {% csrf_token %}
+        <form method="post">
+            {% csrf_token %}
 
-        <label>Village</label>
-        <input name="village" value="{{ farmer.village }}" >
+            <label>Village</label>
+            <input name="village" value="{{ farmer.village }}">
 
-        <label>District</label>
-        <input name="district" value="{{ farmer.district }}">
+            <label>District</label>
+            <input name="district" value="{{ farmer.district }}">
 
-        <label>State</label>
-        <input name="state" value="{{ farmer.state }}">
+            <label>State</label>
+            <input name="state" value="{{ farmer.state }}">
 
-        <label>Soil Type</label>
-        <input name="soil_type" value="{{ farmer.soil_type }}">
+            <label>Soil Type</label>
+            <input name="soil_type" value="{{ farmer.soil_type }}">
 
-        <label >Farm Area Acres</label>
-        <input name="farm_area_acres" value="{{ farmer.farm_area_acres }}">
+            <label>Primary Crop</label>
+            <select name="crop"
+                style="width:100%;padding:12px;border-radius:10px;border:1px solid #ccc;margin-top:6px;">
+                <option value="">-- Select Crop --</option>
+                <option value="rice" {% if farmer.crop == "rice" %}selected{% endif %}>Rice</option>
+                <option value="wheat" {% if farmer.crop == "wheat" %}selected{% endif %}>Wheat</option>
+                <option value="millet" {% if farmer.crop == "millet" %}selected{% endif %}>Millet</option>
+                <option value="maize" {% if farmer.crop == "maize" %}selected{% endif %}>Maize</option>
+                <option value="cotton" {% if farmer.crop == "cotton" %}selected{% endif %}>Cotton</option>
+                <option value="sugarcane" {% if farmer.crop == "sugarcane" %}selected{% endif %}>Sugarcane</option>
+                <option value="tomato" {% if farmer.crop == "tomato" %}selected{% endif %}>Tomato</option>
+                <option value="chilli" {% if farmer.crop == "chilli" %}selected{% endif %}>Chilli</option>
+            </select>
 
-        <label >Bank Account Number</label>
-        <input name="bank_account_number" value="{{ farmer.bank_account_number }}" maxlength="14">
+            <label>Farm Area Acres</label>
+            <input name="farm_area_acres" value="{{ farmer.farm_area_acres }}">
 
-        <label >IFSC Code</label>
-        <input name="ifsc_code" value="{{ farmer.ifsc_code }}" maxlength="11">
+            <label>Bank Account Number</label>
+            <input name="bank_account_number" value="{{ farmer.bank_account_number }}" maxlength="14">
 
-        <!-- 📍 LOCATION BUTTON -->
-        <button type="button" class="location-btn" onclick="getLocation()">
-            📍 Detect My Location
-        </button>
+            <label>IFSC Code</label>
+            <input name="ifsc_code" value="{{ farmer.ifsc_code }}" maxlength="11">
 
-        <!-- HIDDEN FIELDS -->
-        <input type="hidden" name="latitude" id="latitude" value="{{ farmer.latitude }}">
-        <input type="hidden" name="longitude" id="longitude" value="{{ farmer.longitude }}">
+            <!-- 📍 LOCATION BUTTON -->
+            <button type="button" class="location-btn" onclick="getLocation()">
+                📍 Detect My Location
+            </button>
 
-        <button type="submit" class="save-btn">Save Profile</button>
-    </form>
-</div>
+            <!-- HIDDEN FIELDS -->
+            <input type="hidden" name="latitude" id="latitude" value="{{ farmer.latitude }}">
+            <input type="hidden" name="longitude" id="longitude" value="{{ farmer.longitude }}">
 
-<script>
-function getLocation() {
-    if (!navigator.geolocation) {
-        alert("Geolocation not supported");
-        return;
-    }
+            <button type="submit" class="save-btn">Save Profile</button>
+        </form>
+    </div>
 
-    navigator.geolocation.getCurrentPosition(
-        function(position) {
-            document.getElementById("latitude").value = position.coords.latitude;
-            document.getElementById("longitude").value = position.coords.longitude;
-            alert("📍 Location detected successfully");
-        },
-        function() {
-            alert("Please allow location access");
+    <script>
+        function getLocation() {
+            if (!navigator.geolocation) {
+                alert("Geolocation not supported");
+                return;
+            }
+
+            navigator.geolocation.getCurrentPosition(
+                function (position) {
+                    document.getElementById("latitude").value = position.coords.latitude;
+                    document.getElementById("longitude").value = position.coords.longitude;
+                    alert("📍 Location detected successfully");
+                },
+                function () {
+                    alert("Please allow location access");
+                }
+            );
         }
-    );
-}
-</script>
+    </script>
 
 </body>
+
 </html>

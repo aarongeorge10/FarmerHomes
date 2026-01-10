@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Weather Advisory | Farmer Homes</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            background: #f4f7f5;
+            font-family: "Poppins", sans-serif;
+        }
+
+        .navbar {
+            background: #1B5E20;
+            padding: 15px 30px;
+            color: white;
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: auto;
+            padding: 30px;
+        }
+
+        .weather-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .weather-main {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .temp {
+            font-size: 56px;
+            color: #1B5E20;
+        }
+
+        .desc {
+            font-size: 20px;
+            text-transform: capitalize;
+        }
+
+        .stats {
+            display: flex;
+            gap: 25px;
+            margin-top: 15px;
+        }
+
+        .stat {
+            background: #E8F5E9;
+            padding: 15px;
+            border-radius: 12px;
+            font-weight: 500;
+        }
+
+        .forecast {
+            display: flex;
+            gap: 15px;
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+
+        .day {
+            min-width: 120px;
+            background: #F1F8E9;
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .rules {
+            background: #fff8e1;
+            padding: 20px;
+            border-radius: 16px;
+        }
+
+        .rules h3 {
+            color: #F9A825;
+        }
+
+        ul {
+            padding-left: 20px;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+
+        .navbar {
+            background: #1B5E20;
+            padding: 14px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: 600;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            margin-left: 25px;
+            font-weight: 400;
+            opacity: 0.9;
+        }
+
+        .nav-links a:hover {
+            opacity: 1;
+            text-decoration: underline;
+        }
+
+        .nav-links .active {
+            border-bottom: 3px solid #F9A825;
+            padding-bottom: 4px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- TOP NAVBAR -->
+    <div class="navbar">
+        <div class="logo">🌾 Farmer Homes</div>
+        <div class="nav-links">
+            <a href="{% url 'home' %}">Home</a>
+            <a href="{% url 'public_markets' %}">Markets</a>
+            <a href="{% url 'public_weather' %}" class="active">Weather Advisory</a>
+            <a href="{% url 'login' %}">Login</a>
+        </div>
+    </div>
+
+    <div class="container">
+
+        <div class="weather-card">
+            <div class="weather-main">
+                <div>
+                    <div class="temp">{{ weather.temperature }}°C</div>
+                    <div class="desc">{{ weather.description }}</div>
+                </div>
+            </div>
+
+            <div class="stats">
+                <div class="stat">💧 Humidity: {{ weather.humidity }}%</div>
+                <div class="stat">🌧️ Rain: {{ weather.rain }} mm</div>
+                <div class="stat">🌬️ Wind: {{ weather.wind_speed }} m/s</div>
+            </div>
+        </div>
+
+        <div class="weather-card">
+            <h3>📅 7 Day Forecast</h3>
+            <div class="forecast">
+                {% for day in weather.forecast %}
+                <div class="day">
+                    <strong>{{ day.temp.day }}°C</strong><br>
+                    {{ day.weather.0.main }}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="rules">
+            <h3>🌾 Smart Farming Rules</h3>
+            <ul>
+                {% for r in rules %}
+                <li>{{ r }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+    </div>
+
+</body>
+
+</html>

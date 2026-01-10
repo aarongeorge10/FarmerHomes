@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'buyersapp',
     'orders',
     'trading',
+    "weatherapp",
 ]
 
 MIDDLEWARE = [
@@ -111,12 +112,13 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Kolkata'
 
 USE_I18N = True
 
 USE_TZ = True
 
+WEATHER_API_KEY = "849b5db09c48994474896191bd333644"
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/

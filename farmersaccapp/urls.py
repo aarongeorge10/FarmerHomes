@@ -17,4 +17,7 @@ urlpatterns = [
     path("dashboard/buyers/reject/<int:user_id>/", views.reject_buyer,name="reject_buyer"),
     path("farmer_profile/", views.farmer_profile, name="farmer_profile"),
     path("farmer/notifications/", views.farmer_notifications, name="farmer_notifications"),
+    path("farmer/reports/", views.farmer_reports, name="farmer_reports"),
+    path("control/reports/", views.admin_reports, name="admin_reports"),
+path("control/reports/reply/<int:report_id>/", views.admin_reply_report, name="admin_reply_report"),
 ]

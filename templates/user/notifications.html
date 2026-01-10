@@ -1,3 +1,4 @@
+{% load tz %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -139,10 +140,10 @@
 
             <div class="meta">
                 <span class="market">
-                    🏪 {{ note.market.name }}
+                    🏪 {{ note.order.market.name }}
                 </span>
                 <span>
-                    {{ note.created_at|date:"d M Y, h:i A" }}
+                    🕒 {{ note.created_at|localtime|date:"d M Y, h:i A" }}
                 </span>
             </div>
         </div>

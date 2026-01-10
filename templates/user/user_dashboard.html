@@ -168,6 +168,44 @@
         }
     </style>
 </head>
+{% if profile_incomplete %}
+<div style="
+    position:fixed;
+    top:0; left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.6);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    z-index:9999;
+">
+    <div style="
+        background:white;
+        padding:30px;
+        border-radius:16px;
+        max-width:400px;
+        text-align:center;
+        box-shadow:0 10px 25px rgba(0,0,0,0.3);
+    ">
+        <h3 style="color:#2E7D32;">⚠ Complete Your Profile</h3>
+        <p>
+            Please update your village, district, state and location to access all features.
+        </p>
+        <a href="{% url 'farmer_profile' %}" style="
+            display:inline-block;
+            margin-top:15px;
+            background:#2E7D32;
+            color:white;
+            padding:12px 20px;
+            border-radius:10px;
+            text-decoration:none;
+        ">
+            Update Profile Now
+        </a>
+    </div>
+</div>
+{% endif %}
 
 <body>
 
@@ -212,7 +250,7 @@
                 </div>
             </a>
 
-            <a href="#">
+            <a href="{% url 'farmer_weather' %}">
                 <div class="card">
                     <h3>🌦 Weather Updates</h3>
                     <p>Get real-time weather insights for better farming decisions.</p>
@@ -224,6 +262,14 @@
                 <div class="card">
                     <h3>📦 Order History</h3>
                     <p>View your past purchases, sales, and transaction details.</p>
+                    <span>View Orders →</span>
+                </div>
+            </a>
+
+            <a href="{% url 'farmer_order_history' %}">
+                <div class="card">
+                    <h3>📜 My Sales History</h3>
+                    <p>View all your crop selling orders.</p>
                     <span>View Orders →</span>
                 </div>
             </a>
@@ -258,6 +304,14 @@
                     <h3>🧑‍🌾 My Profile</h3>
                     <p>Manage your personal and farming information.</p>
                     <span>Update Profile →</span>
+                </div>
+            </a>
+
+            <a href="{% url 'farmer_reports' %}">
+                <div class="card">
+                    <h3>📢 Report / Feedback</h3>
+                    <p>Report problems, suggestions, or issues to admin.</p>
+                    <span>Send Report →</span>
                 </div>
             </a>
 

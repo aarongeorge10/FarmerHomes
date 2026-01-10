@@ -13,6 +13,7 @@ from .decorators import farmer_required
 from django.views.decorators.http import require_POST
 from buyersapp.models import BuyerBuyPrice
 from trading.models import FarmerNotification
+from .models import FarmerReport
 
 def home(request):
     return render(request, "user/home.html")
@@ -240,10 +241,17 @@ def user_dashboard(request):
     user_id = request.session.get("user_id")
     user = get_object_or_404(AllUser, id=user_id, role="farmer")
 
-    # ✅ Ensure farmer profile exists
     farmer, created = FarmerProfile.objects.get_or_create(user=user)
 
-    # 🔔 ONLY RECENT 2 NOTIFICATIONS
+    # 🔍 Check profile completeness
+    profile_incomplete = not all([
+        farmer.village,
+        farmer.district,
+        farmer.state,
+        farmer.latitude,
+        farmer.longitude,
+    ])
+
     notifications = FarmerNotification.objects.filter(
         farmer=farmer
     ).order_by("-created_at")[:2]
@@ -256,7 +264,8 @@ def user_dashboard(request):
     return render(request, "user/user_dashboard.html", {
         "username": user.username,
         "notifications": notifications,
-        "unread_count": unread_count
+        "unread_count": unread_count,
+        "profile_incomplete": profile_incomplete   # 👈 new
     })
 
 
@@ -372,6 +381,7 @@ def farmer_profile(request):
         farmer.district = request.POST.get("district")
         farmer.state = request.POST.get("state")
         farmer.soil_type = request.POST.get("soil_type")
+        farmer.crop = request.POST.get("crop")
         farmer.farm_area_acres = request.POST.get("farm_area_acres")
         farmer.bank_account_number = request.POST.get("bank_account_number")
         farmer.ifsc_code = request.POST.get("ifsc_code")
@@ -416,3 +426,46 @@ def farmer_notifications(request):
     return render(request, "user/notifications.html", {
         "notifications": notifications
     })
+
+@farmer_required
+def farmer_reports(request):
+    farmer = request.current_user.farmer_profile
+
+    if request.method == "POST":
+        FarmerReport.objects.create(
+            farmer=farmer,
+            subject=request.POST.get("subject"),
+            message=request.POST.get("message")
+        )
+        return redirect("farmer_reports")
+
+    reports = FarmerReport.objects.filter(farmer=farmer).order_by("-created_at")
+
+    return render(request, "user/farmer_reports.html", {
+        "reports": reports
+    })
+
+@admin_required
+def admin_reports(request):
+    reports = FarmerReport.objects.select_related("farmer__user").order_by("-created_at")
+    return render(request, "admin/reports.html", {"reports": reports})
+
+@admin_required
+def admin_reply_report(request, report_id):
+    report = get_object_or_404(FarmerReport, id=report_id)
+
+    if request.method == "POST":
+        reply = request.POST.get("reply")
+
+        report.admin_reply = reply
+        report.status = "resolved"
+        report.replied_at = timezone.now()
+        report.save()
+
+        # 🔔 SEND NOTIFICATION TO FARMER
+        FarmerNotification.objects.create(
+            farmer=report.farmer,
+            message=f"Admin replied to your report: '{report.subject}'"
+        )
+
+    return redirect("admin_reports")

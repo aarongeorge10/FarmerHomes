@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>My Farm Weather | Farmer Homes</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: "Poppins", sans-serif;
+            background: linear-gradient(120deg, #eef5ef, #f4f7f5);
+        }
+
+        /* NAVBAR */
+        .navbar {
+            background: linear-gradient(90deg, #1B5E20, #2E7D32);
+            color: white;
+            padding: 18px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            margin-left: 30px;
+            font-weight: 500;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: "";
+            position: absolute;
+            width: 0;
+            height: 3px;
+            background: #F9A825;
+            left: 0;
+            bottom: -6px;
+            transition: 0.3s;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* PAGE */
+        .container {
+            max-width: 1100px;
+            margin: auto;
+            padding: 120px 40px 50px;
+            /* top padding added */
+        }
+
+        h1 {
+            color: #1B5E20;
+            margin-bottom: 30px;
+            font-size: 32px;
+        }
+
+        /* WEATHER CARD */
+        .card {
+            background: white;
+            padding: 35px;
+            border-radius: 18px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+            margin-bottom: 30px;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-6px);
+        }
+
+        .temp {
+            font-size: 60px;
+            color: #2E7D32;
+            font-weight: 600;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .stat {
+            background: linear-gradient(135deg, #E8F5E9, #C8E6C9);
+            padding: 18px;
+            border-radius: 14px;
+            font-weight: 600;
+            text-align: center;
+            color: #1B5E20;
+        }
+
+        /* ALERT */
+        .alert {
+            background: linear-gradient(90deg, #fff8e1, #ffecb3);
+            padding: 25px;
+            border-radius: 16px;
+            font-size: 20px;
+            border-left: 8px solid #F9A825;
+            margin-top: 25px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        /* IRRIGATION LIST */
+        ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        li {
+            background: #F1F8E9;
+            padding: 14px 18px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            font-weight: 500;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <div class="navbar">
+        <div class="logo">🌾 Farmer Homes</div>
+        <div class="nav-links">
+            <a href="{% url 'user_dashboard' %}">Dashboard</a>
+            <a href="{% url 'farmer_weather' %}">Weather</a>
+            <a href="{% url 'logout' %}">Logout</a>
+        </div>
+    </div>
+
+    <div class="container">
+
+        <h1>🌦 Weather for your farm ({{ crop }})</h1>
+
+        <div class="card">
+            <div class="temp">{{ weather.temperature }}°C</div>
+            <p>{{ weather.description }}</p>
+
+            <div class="stats">
+                <div class="stat">💧 Humidity: {{ weather.humidity }}%</div>
+                <div class="stat">🌧 Rain: {{ weather.rain }} mm</div>
+                <div class="stat">🌬 Wind: {{ weather.wind_speed }} m/s</div>
+            </div>
+        </div>
+
+        {% if advice %}
+        <div class="alert">
+            {{ advice }}
+        </div>
+        {% endif %}
+
+        <h2 style="margin-top:30px;color:#2E7D32">🚜 5-Day Irrigation Plan</h2>
+
+        <div class="card">
+            <ul>
+                {% for day in schedule %}
+                <li style="margin-bottom:12px;font-size:16px;">{{ day }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+    </div>
+
+
+</body>
+
+</html>

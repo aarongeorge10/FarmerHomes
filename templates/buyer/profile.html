@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Buyer Profile | Farmer Homes</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --green: #2E7D32;
+            --green-light: #E8F5E9;
+            --bg: #F5F7F6;
+            --dark: #1B1B1B;
+            --radius: 16px;
+            --shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+        }
+
+        /* ===== NAVBAR ===== */
+        .navbar {
+            background: white;
+            padding: 16px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+        }
+
+        .brand {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--green);
+        }
+
+        .nav-links a {
+            margin-left: 20px;
+            text-decoration: none;
+            color: #444;
+            font-size: 14px;
+        }
+
+        .nav-links a.logout {
+            background: var(--green);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+        }
+
+        /* ===== CONTENT ===== */
+        .container {
+            max-width: 700px;
+            margin: 50px auto;
+            background: white;
+            padding: 35px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        h2 {
+            color: var(--green);
+            margin-bottom: 20px;
+        }
+
+        .field {
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-size: 14px;
+            display: block;
+            margin-bottom: 6px;
+            color: #555;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+        }
+
+        .checkbox {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        button {
+            margin-top: 20px;
+            background: var(--green);
+            color: white;
+            padding: 12px;
+            width: 100%;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+        .note {
+            margin-top: 15px;
+            font-size: 13px;
+            color: #777;
+            background: var(--green-light);
+            padding: 10px;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <div class="navbar">
+        <div class="brand">🌾 Farmer Homes</div>
+        <div class="nav-links">
+            <a href="{% url 'buyer_dashboard' %}">Dashboard</a>
+            <a href="{% url 'buyer_shop_products' %}">Shop</a>
+            <a href="{% url 'logout' %}" class="logout">Logout</a>
+        </div>
+    </div>
+
+    <!-- PROFILE FORM -->
+    <div class="container">
+        <h2>🏪 Buyer Profile</h2>
+
+        <div class="note">
+            Update your shop name and GST number. This information will be shown to farmers when they place orders.
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="field">
+                <label>Business / Shop Name</label>
+                <input name="business_name" value="{{ buyer.business_name }}" required>
+            </div>
+
+            <div class="field">
+                <label>GST Number</label>
+                <input name="gst_number" value="{{ buyer.gst_number }}" required>
+            </div>
+
+            <!-- <div class="checkbox">
+                <input type="checkbox" name="is_exporter" {% if buyer.is_exporter %}checked{% endif %}>
+                <label>Exporter</label>
+            </div> -->
+
+            <button type="submit">Save Profile</button>
+        </form>
+    </div>
+
+</body>
+
+</html>
